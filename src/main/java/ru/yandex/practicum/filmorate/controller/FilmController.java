@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class FilmController {
 
     private final Map<Integer, Film> films = new HashMap<>();
-    private final LocalDate MIN_DATE_RELEASE = LocalDate.parse("1895-12-28");
+    private final LocalDate minDateRelease = LocalDate.parse("1895-12-28");
     private Integer idFilmSequence = 1;
 
     @GetMapping("/films")
@@ -82,9 +82,9 @@ public class FilmController {
         if (filmO.isPresent()) {
             log.debug("check releaseDate");
             Optional<LocalDate> releaseDateO = Optional.ofNullable(filmO.get().getReleaseDate());
-             if (releaseDateO.isPresent() && releaseDateO.get().isBefore(MIN_DATE_RELEASE)) {
-                 log.error("adding film releaseDate is before " + MIN_DATE_RELEASE.toString() + "!");
-                  throw new ValidationException("adding film releaseDate is before " + MIN_DATE_RELEASE.toString() + "!");
+             if (releaseDateO.isPresent() && releaseDateO.get().isBefore(minDateRelease)) {
+                 log.error("adding film releaseDate is before " + minDateRelease.toString() + "!");
+                  throw new ValidationException("adding film releaseDate is before " + minDateRelease.toString() + "!");
             }
         } else {
             throw new ValidationException("adding film is null!");
