@@ -45,6 +45,7 @@ public class FilmController {
             log.debug("set film id {}", idFilmSequence - 1);
             films.put(newFilmId, filmValidated);
             log.debug("Put film into map");
+
             return ResponseEntity.ok(film);
         } catch (ValidationException e) {
             log.error("add film error:{}", e.getMessage());
@@ -67,6 +68,7 @@ public class FilmController {
             }
             films.put(film.getId(), film);
             log.debug("updating film in map");
+
             return ResponseEntity.ok(film);
         } catch (ValidationException e) {
             log.error("update film error:{}", e.getMessage());

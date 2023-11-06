@@ -63,6 +63,7 @@ public class UserController {
             }
             users.put(user.getId(), userValidated);
             log.debug("updating user in map");
+
             return ResponseEntity.ok(userValidated);
         } catch (ValidationException e) {
             log.error("update user error:{}", e.getMessage());
