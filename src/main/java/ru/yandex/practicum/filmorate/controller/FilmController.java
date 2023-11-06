@@ -84,7 +84,7 @@ public class FilmController {
             Optional<LocalDate> releaseDateO = Optional.ofNullable(filmO.get().getReleaseDate());
              if (releaseDateO.isPresent() && releaseDateO.get().isBefore(minDateRelease)) {
                  log.error("adding film releaseDate is before " + minDateRelease.toString() + "!");
-                  throw new ValidationException("adding film releaseDate is before " + minDateRelease.toString() + "!");
+                 throw new ValidationException("adding film releaseDate is before " + minDateRelease.toString() + "!");
             }
         } else {
             throw new ValidationException("adding film is null!");

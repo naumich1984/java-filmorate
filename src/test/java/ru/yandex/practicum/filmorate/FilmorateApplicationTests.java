@@ -33,7 +33,6 @@ class FilmorateApplicationTests {
 	public void setup() {
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		validator = factory.getValidator();
-
 		userController = new UserController();
 		filmController = new FilmController();
 		user = User.builder()
@@ -58,6 +57,7 @@ class FilmorateApplicationTests {
 	@Test
 	void shouldGetAllUsers_whenGetRequest() {
 		userResponse = userController.allUsers();
+
 		assertEquals(userResponse.getStatusCode().value(), 200);
 		assertTrue(userResponse.getBody().toString().contains(user.toString()));
 	}
@@ -70,7 +70,9 @@ class FilmorateApplicationTests {
 	@Test
 	void shouldViolationAddUser_whenPostUserWithIncorrectEmail() {
 		user.setEmail("email.email.ru");
+
 		Set<ConstraintViolation<User>> violations = validator.validate(user);
+
 		assertFalse(violations.isEmpty());
 		assertEquals("email should exists @ symbol", violations.stream().findFirst().get().getMessageTemplate());
 	}
@@ -78,7 +80,9 @@ class FilmorateApplicationTests {
 	@Test
 	void shouldViolationAddUser_whenPostUserWithIncorrectLogin() {
 		user.setLogin("login login");
+
 		Set<ConstraintViolation<User>> violations = validator.validate(user);
+
 		assertFalse(violations.isEmpty());
 		assertEquals("login should not exists space", violations.stream().findFirst().get().getMessageTemplate());
 	}
@@ -86,7 +90,9 @@ class FilmorateApplicationTests {
 	@Test
 	void shouldViolationAddUser_whenPostUserWithEmptyLogin() {
 		user.setLogin("");
+
 		Set<ConstraintViolation<User>> violations = validator.validate(user);
+
 		assertFalse(violations.isEmpty());
 		assertEquals("login should not be blank", violations.stream()
 				.filter(f -> f.getMessageTemplate().contains("login should not be blank"))
@@ -97,7 +103,9 @@ class FilmorateApplicationTests {
 	@Test
 	void shouldViolationAddUser_whenPostUserWithLoginNull() {
 		user.setLogin(null);
+
 		Set<ConstraintViolation<User>> violations = validator.validate(user);
+
 		assertFalse(violations.isEmpty());
 		assertEquals("login should not null", violations.stream()
 				.filter(f -> f.getMessageTemplate().contains("login should not null"))
@@ -108,7 +116,9 @@ class FilmorateApplicationTests {
 	@Test
 	void shouldAddUserAndSetLoginToName_whenPostUserWithEmptyName() {
 		User user2 = User.builder().email("email@email2.ru").login("login2").build();
+
 		ResponseEntity userResponse = userController.addUser(user2);
+
 		assertEquals(userResponse.getStatusCode().value(), 200);
 		assertTrue(userResponse.getBody().toString().contains("name=login"));
 	}
@@ -116,7 +126,9 @@ class FilmorateApplicationTests {
 	@Test
 	void shouldViolationAddUser_whenPostUserBirthdayInFuture() {
 		user.setBirthday(LocalDate.parse("2222-12-12"));
+
 		Set<ConstraintViolation<User>> violations = validator.validate(user);
+
 		assertFalse(violations.isEmpty());
 		assertEquals("birthday should be in past", violations.stream().findFirst().get().getMessageTemplate());
 	}
@@ -124,7 +136,9 @@ class FilmorateApplicationTests {
 	@Test
 	void shouldUpdateUser() {
 		user.setName("updated");
+
 		ResponseEntity userResponse = userController.updateUser(user);
+
 		assertEquals(userResponse.getStatusCode().value(), 200);
 		assertTrue(userResponse.getBody().toString().contains("name=updated"));
 	}
@@ -133,6 +147,7 @@ class FilmorateApplicationTests {
 	@Test
 	void shouldGetAllFilms_whenGetRequest() {
 		filmResponse = filmController.allFilms();
+
 		assertEquals(filmResponse.getStatusCode().value(), 200);
 		assertTrue(filmResponse.getBody().toString().contains(film.toString()));
 	}
@@ -145,7 +160,9 @@ class FilmorateApplicationTests {
 	@Test
 	void shouldViolationAddFilm_whenPostFilmWithEmptyName() {
 		film.setName("");
+
 		Set<ConstraintViolation<Film>> violations = validator.validate(film);
+
 		assertFalse(violations.isEmpty());
 		assertEquals("name should not be blank", violations.stream().findFirst().get().getMessageTemplate());
 	}
@@ -155,7 +172,9 @@ class FilmorateApplicationTests {
 		film.setDescription("123456789112345678911234567891123456789112345678911234567891123456789112345678911234567891" +
 				"1234567891123456789112345678911234567891123456789112345678911234567891123456789112345678911234567891" +
 				"1234567891123456789112345678911234567891123456789112345678911234567891123456789112345678911234567891");
+
 		Set<ConstraintViolation<Film>> violations = validator.validate(film);
+
 		assertFalse(violations.isEmpty());
 		assertEquals("description length should be less 200 symbols", violations.stream()
 				.findFirst()
@@ -168,7 +187,9 @@ class FilmorateApplicationTests {
 		film.setDescription("123456789112345678911234567891123456789112345678911234567891123456789112345678911234567891" +
 				"12345678911234567891123456789112345678911234567891123456789112345678911234567891" +
 				"123456789112345678911234567891");
+
 		Set<ConstraintViolation<Film>> violations = validator.validate(film);
+
 		assertTrue(violations.isEmpty());
 	}
 
@@ -181,14 +202,18 @@ class FilmorateApplicationTests {
 				.duration(120)
 				.releaseDate(LocalDate.parse("1805-12-28"))
 				.build();
+
 		ResponseEntity filmResponse = filmController.addFilm(film2);
+
 		assertEquals(filmResponse.getStatusCode().value(), 400);
 	}
 
 	@Test
 	void shouldViolationAddFilm_whenPostFilmWithDurationNegative() {
 		film.setDuration(-1);
+
 		Set<ConstraintViolation<Film>> violations = validator.validate(film);
+
 		assertFalse(violations.isEmpty());
 		assertEquals("duration should be positive", violations.stream()
 				.filter(f -> f.getMessageTemplate().contains("duration should be positive"))
@@ -199,7 +224,9 @@ class FilmorateApplicationTests {
 	@Test
 	void shouldViolationAddFilm_whenPostFilmWithDurationZero() {
 		film.setDuration(0);
+
 		Set<ConstraintViolation<Film>> violations = validator.validate(film);
+
 		assertFalse(violations.isEmpty());
 		assertEquals("duration should be positive", violations.stream()
 				.filter(f -> f.getMessageTemplate().contains("duration should be positive"))
@@ -210,7 +237,9 @@ class FilmorateApplicationTests {
 	@Test
 	void shouldUpdateFilm() {
 		film.setName("updated film");
+
 		ResponseEntity filmResponse = filmController.updateFilm(film);
+
 		assertEquals(filmResponse.getStatusCode().value(), 200);
 		assertTrue(filmResponse.getBody().toString().contains("name=updated film"));
 	}
