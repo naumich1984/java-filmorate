@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Data
 @Builder
 public class Film {
-    private Integer id;
+    private Long id;
     @NotNull(message = "name should not null")
     @NotBlank(message = "name should not be blank")
     private String name;
