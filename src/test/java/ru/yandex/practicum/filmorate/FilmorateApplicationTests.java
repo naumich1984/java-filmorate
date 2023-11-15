@@ -29,234 +29,234 @@ import static org.junit.jupiter.api.Assertions.*;
 class FilmorateApplicationTests {
 
     @Test
-    void mockTest(){
+    void mockTest() {
 
     }
 
-	private Validator validator;
-	private UserController userController;
-	private FilmController filmController;
-	private User user;
-	private Film film;
-	private ResponseEntity userResponse;
-	private ResponseEntity filmResponse;
+    private Validator validator;
+    private UserController userController;
+    private FilmController filmController;
+    private User user;
+    private Film film;
+    private ResponseEntity userResponse;
+    private ResponseEntity filmResponse;
 
-	@BeforeEach
-	public void setup() {
-		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-		validator = factory.getValidator();
+    @BeforeEach
+    public void setup() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
         UserStorage userStorage = new InMemoryUserStorage();
         FilmStorage filmStorage = new InMemoryFilmStorage();
-		userController = new UserController(userStorage, new UserService(userStorage));
-		filmController = new FilmController(filmStorage, new FilmService(filmStorage));
-		user = User.builder()
-				.id(null)
-				.email("email@email.ru")
-				.login("login")
-				.name("name")
-				.birthday(LocalDate.parse("1999-09-09"))
-				.build();
-		film = Film.builder()
-				.id(null)
-				.name("name")
-				.description("description")
-				.releaseDate(LocalDate.parse("1969-03-03"))
-				.duration(123)
-				.build();
-		userResponse = userController.addUser(user);
-		filmResponse = filmController.addFilm(film);
-	}
+        userController = new UserController(userStorage, new UserService(userStorage));
+        filmController = new FilmController(filmStorage, new FilmService(filmStorage));
+        user = User.builder()
+                .id(null)
+                .email("email@email.ru")
+                .login("login")
+                .name("name")
+                .birthday(LocalDate.parse("1999-09-09"))
+                .build();
+        film = Film.builder()
+                .id(null)
+                .name("name")
+                .description("description")
+                .releaseDate(LocalDate.parse("1969-03-03"))
+                .duration(123)
+                .build();
+        userResponse = userController.addUser(user);
+        filmResponse = filmController.addFilm(film);
+    }
 
-	//---User Tests----------------------------------------------------------------------
-	@Test
-	void shouldGetAllUsers_whenGetRequest() {
-		userResponse = userController.allUsers();
+    //---User Tests----------------------------------------------------------------------
+    @Test
+    void shouldGetAllUsers_whenGetRequest() {
+        userResponse = userController.allUsers();
 
-		assertEquals(userResponse.getStatusCode().value(), 200);
-		assertTrue(userResponse.getBody().toString().contains(user.toString()));
-	}
+        assertEquals(userResponse.getStatusCode().value(), 200);
+        assertTrue(userResponse.getBody().toString().contains(user.toString()));
+    }
 
-	@Test
-	void shouldAddUser_whenPostCorrectUser() {
-		assertEquals(userResponse.getStatusCode().value(), 200);
-	}
+    @Test
+    void shouldAddUser_whenPostCorrectUser() {
+        assertEquals(userResponse.getStatusCode().value(), 200);
+    }
 
-	@Test
-	void shouldViolationAddUser_whenPostUserWithIncorrectEmail() {
-		user.setEmail("email.email.ru");
+    @Test
+    void shouldViolationAddUser_whenPostUserWithIncorrectEmail() {
+        user.setEmail("email.email.ru");
 
-		Set<ConstraintViolation<User>> violations = validator.validate(user);
+        Set<ConstraintViolation<User>> violations = validator.validate(user);
 
-		assertFalse(violations.isEmpty());
-		assertEquals("email should exists @ symbol", violations.stream().findFirst().get().getMessageTemplate());
-	}
+        assertFalse(violations.isEmpty());
+        assertEquals("email should exists @ symbol", violations.stream().findFirst().get().getMessageTemplate());
+    }
 
-	@Test
-	void shouldViolationAddUser_whenPostUserWithIncorrectLogin() {
-		user.setLogin("login login");
+    @Test
+    void shouldViolationAddUser_whenPostUserWithIncorrectLogin() {
+        user.setLogin("login login");
 
-		Set<ConstraintViolation<User>> violations = validator.validate(user);
+        Set<ConstraintViolation<User>> violations = validator.validate(user);
 
-		assertFalse(violations.isEmpty());
-		assertEquals("login should not exists space", violations.stream().findFirst().get().getMessageTemplate());
-	}
+        assertFalse(violations.isEmpty());
+        assertEquals("login should not exists space", violations.stream().findFirst().get().getMessageTemplate());
+    }
 
-	@Test
-	void shouldViolationAddUser_whenPostUserWithEmptyLogin() {
-		user.setLogin("");
+    @Test
+    void shouldViolationAddUser_whenPostUserWithEmptyLogin() {
+        user.setLogin("");
 
-		Set<ConstraintViolation<User>> violations = validator.validate(user);
+        Set<ConstraintViolation<User>> violations = validator.validate(user);
 
-		assertFalse(violations.isEmpty());
-		assertEquals("login should not be blank", violations.stream()
-				.filter(f -> f.getMessageTemplate().contains("login should not be blank"))
-				.findFirst()
-				.get().getMessageTemplate());
-	}
+        assertFalse(violations.isEmpty());
+        assertEquals("login should not be blank", violations.stream()
+                .filter(f -> f.getMessageTemplate().contains("login should not be blank"))
+                .findFirst()
+                .get().getMessageTemplate());
+    }
 
-	@Test
-	void shouldViolationAddUser_whenPostUserWithLoginNull() {
-		user.setLogin(null);
+    @Test
+    void shouldViolationAddUser_whenPostUserWithLoginNull() {
+        user.setLogin(null);
 
-		Set<ConstraintViolation<User>> violations = validator.validate(user);
+        Set<ConstraintViolation<User>> violations = validator.validate(user);
 
-		assertFalse(violations.isEmpty());
-		assertEquals("login should not null", violations.stream()
-				.filter(f -> f.getMessageTemplate().contains("login should not null"))
-				.findFirst()
-				.get().getMessageTemplate());
-	}
+        assertFalse(violations.isEmpty());
+        assertEquals("login should not null", violations.stream()
+                .filter(f -> f.getMessageTemplate().contains("login should not null"))
+                .findFirst()
+                .get().getMessageTemplate());
+    }
 
-	@Test
-	void shouldAddUserAndSetLoginToName_whenPostUserWithEmptyName() {
-		User user2 = User.builder().email("email@email2.ru").login("login2").build();
+    @Test
+    void shouldAddUserAndSetLoginToName_whenPostUserWithEmptyName() {
+        User user2 = User.builder().email("email@email2.ru").login("login2").build();
 
-		ResponseEntity userResponse = userController.addUser(user2);
+        ResponseEntity userResponse = userController.addUser(user2);
 
-		assertEquals(userResponse.getStatusCode().value(), 200);
-		assertTrue(userResponse.getBody().toString().contains("name=login"));
-	}
+        assertEquals(userResponse.getStatusCode().value(), 200);
+        assertTrue(userResponse.getBody().toString().contains("name=login"));
+    }
 
-	@Test
-	void shouldViolationAddUser_whenPostUserBirthdayInFuture() {
-		user.setBirthday(LocalDate.parse("2222-12-12"));
+    @Test
+    void shouldViolationAddUser_whenPostUserBirthdayInFuture() {
+        user.setBirthday(LocalDate.parse("2222-12-12"));
 
-		Set<ConstraintViolation<User>> violations = validator.validate(user);
+        Set<ConstraintViolation<User>> violations = validator.validate(user);
 
-		assertFalse(violations.isEmpty());
-		assertEquals("birthday should be in past", violations.stream().findFirst().get().getMessageTemplate());
-	}
+        assertFalse(violations.isEmpty());
+        assertEquals("birthday should be in past", violations.stream().findFirst().get().getMessageTemplate());
+    }
 
-	@Test
-	void shouldUpdateUser() {
-		user.setName("updated");
+    @Test
+    void shouldUpdateUser() {
+        user.setName("updated");
 
-		ResponseEntity userResponse = userController.updateUser(user);
+        ResponseEntity userResponse = userController.updateUser(user);
 
-		assertEquals(userResponse.getStatusCode().value(), 200);
-		assertTrue(userResponse.getBody().toString().contains("name=updated"));
-	}
+        assertEquals(userResponse.getStatusCode().value(), 200);
+        assertTrue(userResponse.getBody().toString().contains("name=updated"));
+    }
 
-	//---Film Tests----------------------------------------------------------------------
-	@Test
-	void shouldGetAllFilms_whenGetRequest() {
-		filmResponse = filmController.allFilms();
+    //---Film Tests----------------------------------------------------------------------
+    @Test
+    void shouldGetAllFilms_whenGetRequest() {
+        filmResponse = filmController.allFilms();
 
-		assertEquals(filmResponse.getStatusCode().value(), 200);
-		assertTrue(filmResponse.getBody().toString().contains(film.toString()));
-	}
+        assertEquals(filmResponse.getStatusCode().value(), 200);
+        assertTrue(filmResponse.getBody().toString().contains(film.toString()));
+    }
 
-	@Test
-	void shouldAddFilm_whenPostCorrectFilm() {
-		assertEquals(filmResponse.getStatusCode().value(), 200);
-	}
+    @Test
+    void shouldAddFilm_whenPostCorrectFilm() {
+        assertEquals(filmResponse.getStatusCode().value(), 200);
+    }
 
-	@Test
-	void shouldViolationAddFilm_whenPostFilmWithEmptyName() {
-		film.setName("");
+    @Test
+    void shouldViolationAddFilm_whenPostFilmWithEmptyName() {
+        film.setName("");
 
-		Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        Set<ConstraintViolation<Film>> violations = validator.validate(film);
 
-		assertFalse(violations.isEmpty());
-		assertEquals("name should not be blank", violations.stream().findFirst().get().getMessageTemplate());
-	}
+        assertFalse(violations.isEmpty());
+        assertEquals("name should not be blank", violations.stream().findFirst().get().getMessageTemplate());
+    }
 
-	@Test
-	void shouldViolationAddFilm_whenPostFilmWithDescriptionLengthOver200symbols() {
-		film.setDescription("123456789112345678911234567891123456789112345678911234567891123456789112345678911234567891" +
-				"1234567891123456789112345678911234567891123456789112345678911234567891123456789112345678911234567891" +
-				"1234567891123456789112345678911234567891123456789112345678911234567891123456789112345678911234567891");
+    @Test
+    void shouldViolationAddFilm_whenPostFilmWithDescriptionLengthOver200symbols() {
+        film.setDescription("123456789112345678911234567891123456789112345678911234567891123456789112345678911234567891" +
+                "1234567891123456789112345678911234567891123456789112345678911234567891123456789112345678911234567891" +
+                "1234567891123456789112345678911234567891123456789112345678911234567891123456789112345678911234567891");
 
-		Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        Set<ConstraintViolation<Film>> violations = validator.validate(film);
 
-		assertFalse(violations.isEmpty());
-		assertEquals("description length should be less 200 symbols", violations.stream()
-				.findFirst()
-				.get()
-				.getMessageTemplate());
-	}
+        assertFalse(violations.isEmpty());
+        assertEquals("description length should be less 200 symbols", violations.stream()
+                .findFirst()
+                .get()
+                .getMessageTemplate());
+    }
 
-	@Test
-	void shouldFilmUser_whenPostFilmWithDescriptionLength200symbols() {
-		film.setDescription("123456789112345678911234567891123456789112345678911234567891123456789112345678911234567891" +
-				"12345678911234567891123456789112345678911234567891123456789112345678911234567891" +
-				"123456789112345678911234567891");
+    @Test
+    void shouldFilmUser_whenPostFilmWithDescriptionLength200symbols() {
+        film.setDescription("123456789112345678911234567891123456789112345678911234567891123456789112345678911234567891" +
+                "12345678911234567891123456789112345678911234567891123456789112345678911234567891" +
+                "123456789112345678911234567891");
 
-		Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        Set<ConstraintViolation<Film>> violations = validator.validate(film);
 
-		assertTrue(violations.isEmpty());
-	}
+        assertTrue(violations.isEmpty());
+    }
 
-	@Test
-	void shouldViolationAddFilm_whenPostFilmWithReleaseDateBefore1895() {
-		Film film2 = Film.builder()
-				.id(null)
-				.name("name2")
-				.description("description2")
-				.duration(120)
-				.releaseDate(LocalDate.parse("1805-12-28"))
-				.build();
+    @Test
+    void shouldViolationAddFilm_whenPostFilmWithReleaseDateBefore1895() {
+        Film film2 = Film.builder()
+                .id(null)
+                .name("name2")
+                .description("description2")
+                .duration(120)
+                .releaseDate(LocalDate.parse("1805-12-28"))
+                .build();
 
         final ValidationException exception = assertThrows(
                 ValidationException.class,
                 () -> {
                     ResponseEntity filmResponse = filmController.addFilm(film2);
                 });
-	}
+    }
 
-	@Test
-	void shouldViolationAddFilm_whenPostFilmWithDurationNegative() {
-		film.setDuration(-1);
+    @Test
+    void shouldViolationAddFilm_whenPostFilmWithDurationNegative() {
+        film.setDuration(-1);
 
-		Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        Set<ConstraintViolation<Film>> violations = validator.validate(film);
 
-		assertFalse(violations.isEmpty());
-		assertEquals("duration should be positive", violations.stream()
-				.filter(f -> f.getMessageTemplate().contains("duration should be positive"))
-				.findFirst()
-				.get().getMessageTemplate());
-	}
+        assertFalse(violations.isEmpty());
+        assertEquals("duration should be positive", violations.stream()
+                .filter(f -> f.getMessageTemplate().contains("duration should be positive"))
+                .findFirst()
+                .get().getMessageTemplate());
+    }
 
-	@Test
-	void shouldViolationAddFilm_whenPostFilmWithDurationZero() {
-		film.setDuration(0);
+    @Test
+    void shouldViolationAddFilm_whenPostFilmWithDurationZero() {
+        film.setDuration(0);
 
-		Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        Set<ConstraintViolation<Film>> violations = validator.validate(film);
 
-		assertFalse(violations.isEmpty());
-		assertEquals("duration should be positive", violations.stream()
-				.filter(f -> f.getMessageTemplate().contains("duration should be positive"))
-				.findFirst()
-				.get().getMessageTemplate());
-	}
+        assertFalse(violations.isEmpty());
+        assertEquals("duration should be positive", violations.stream()
+                .filter(f -> f.getMessageTemplate().contains("duration should be positive"))
+                .findFirst()
+                .get().getMessageTemplate());
+    }
 
-	@Test
-	void shouldUpdateFilm() {
-		film.setName("updated film");
+    @Test
+    void shouldUpdateFilm() {
+        film.setName("updated film");
 
-		ResponseEntity filmResponse = filmController.updateFilm(film);
+        ResponseEntity filmResponse = filmController.updateFilm(film);
 
-		assertEquals(filmResponse.getStatusCode().value(), 200);
-		assertTrue(filmResponse.getBody().toString().contains("name=updated film"));
-	}
+        assertEquals(filmResponse.getStatusCode().value(), 200);
+        assertTrue(filmResponse.getBody().toString().contains("name=updated film"));
+    }
 }

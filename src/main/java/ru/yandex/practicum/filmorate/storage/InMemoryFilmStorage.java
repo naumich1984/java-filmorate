@@ -35,7 +35,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         validationFilm(film);
         log.debug("add film validation success");
         Film filmValidated = film;
-        if (films.values().stream().filter(f ->  f.equals(filmValidated)).findFirst().isPresent()) {
+        if (films.values().stream().filter(f -> f.equals(filmValidated)).findFirst().isPresent()) {
             log.error("adding film already exists!");
             throw new ValidationException("adding film already exists!");
         }

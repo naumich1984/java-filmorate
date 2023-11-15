@@ -18,7 +18,7 @@ public class ErrorHandler {
         log.debug("Ошибка валидации:{}", e.getMessage());
         log.debug("stacktrace ошибки:{}", e.getStackTrace());
 
-        return Map.of("Ошибка валидации",e.getMessage());
+        return Map.of("Ошибка валидации", e.getMessage());
     }
 
     @ExceptionHandler
