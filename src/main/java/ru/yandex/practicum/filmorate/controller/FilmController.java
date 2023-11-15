@@ -10,7 +10,6 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.websocket.server.PathParam;
 
 @RestController
 @Slf4j
@@ -55,16 +54,23 @@ public class FilmController {
 
     @DeleteMapping("/films/{id}/like/{userId}")
     public ResponseEntity deleteLike(@PathVariable long id, @PathVariable long userId) {
-        log.debug("PUT /films/{id}/like/{userId} request");
+        log.debug("DELETE /films/{id}/like/{userId} request");
 
         return ResponseEntity.ok(filmService.deleteLikeFromFilm(id, userId));
     }
 
     @GetMapping("/films/popular")
-    public ResponseEntity topFilms(@RequestParam int count) {
+    public ResponseEntity topFilms(@RequestParam(required = false) Integer count) {
         log.debug("GET /films/popular?count={count} request");
 
         return ResponseEntity.ok(filmService.getTopNfilms(count));
+    }
+
+    @GetMapping("/films/{id}")
+    public ResponseEntity getFilm(@PathVariable long id) {
+        log.debug("GET /films/{id} request");
+
+        return ResponseEntity.ok(filmService.getFilmById(id));
     }
 
 }

@@ -44,6 +44,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         log.debug("set film id {}", newFilmId);
         films.put(newFilmId, filmValidated);
         log.debug("Put film into map");
+
         return filmValidated;
     }
 
@@ -58,6 +59,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
         films.put(film.getId(), film);
         log.debug("updating film in map");
+
         return film;
     }
 

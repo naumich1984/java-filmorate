@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Data
 @Builder
 public class User {
-    private Integer id;
+    private Long id;
     @NotBlank(message = "email should not be blank")
     @Email(message = "email should exists @ symbol")
     private String email;

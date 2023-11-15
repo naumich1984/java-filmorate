@@ -39,4 +39,22 @@ public class ErrorHandler {
         return Map.of("Ошибка сервера", e.getMessage());
     }
 
+    @ExceptionHandler
+    @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "No user likes found")
+    public Map<String, String> handleNoUserLikesFoundException(final NoUserLikesFoundException e) {
+        log.debug("Ошибка поиска лайка:{}", e.getMessage());
+        log.debug("stacktrace ошибки:{}", e.getStackTrace());
+
+        return Map.of("Ошибка поиска лайка", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "No user found")
+    public Map<String, String> handleNoUserFoundException(final NoUserFoundException e) {
+        log.debug("Ошибка поиска пользователя:{}", e.getMessage());
+        log.debug("stacktrace ошибки:{}", e.getStackTrace());
+
+        return Map.of("Ошибка поиска пользователя", e.getMessage());
+    }
+
 }
