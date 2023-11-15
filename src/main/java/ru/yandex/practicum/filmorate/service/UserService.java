@@ -72,7 +72,7 @@ public class UserService {
         log.debug("filmId {}", userId);
         try {
             return userStorage.allUsers().stream().filter(f -> f.getId() == userId).findFirst().get();
-        } catch(NoSuchElementException e) {
+        } catch (NoSuchElementException e) {
             throw new NoUserFoundException(e.getMessage());
         }
     }
@@ -85,7 +85,7 @@ public class UserService {
             return userFriends.stream()
                     .map(idUser -> getUser(idUser))
                     .collect(Collectors.toList());
-        } catch(NoSuchElementException e) {
+        } catch (NoSuchElementException e) {
             throw new NoUserFoundException(e.getMessage());
         }
     }
@@ -101,7 +101,7 @@ public class UserService {
             return commonFriends.stream()
                     .map(idUser -> getUser(idUser))
                     .collect(Collectors.toList());
-        } catch(NoSuchElementException | NullPointerException e) {
+        } catch (NoSuchElementException | NullPointerException e) {
             return Collections.EMPTY_LIST;
         }
     }
