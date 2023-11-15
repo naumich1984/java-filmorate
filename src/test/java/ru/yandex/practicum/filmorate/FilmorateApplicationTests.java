@@ -6,8 +6,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.controller.UserController;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -26,7 +33,7 @@ class FilmorateApplicationTests {
 
     }
 
-	/*private Validator validator;
+	private Validator validator;
 	private UserController userController;
 	private FilmController filmController;
 	private User user;
@@ -38,8 +45,10 @@ class FilmorateApplicationTests {
 	public void setup() {
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		validator = factory.getValidator();
-		userController = new UserController();
-		filmController = new FilmController();
+        UserStorage userStorage = new InMemoryUserStorage();
+        FilmStorage filmStorage = new InMemoryFilmStorage();
+		userController = new UserController(userStorage, new UserService(userStorage));
+		filmController = new FilmController(filmStorage, new FilmService(filmStorage));
 		user = User.builder()
 				.id(null)
 				.email("email@email.ru")
@@ -208,9 +217,11 @@ class FilmorateApplicationTests {
 				.releaseDate(LocalDate.parse("1805-12-28"))
 				.build();
 
-		ResponseEntity filmResponse = filmController.addFilm(film2);
-
-		assertEquals(filmResponse.getStatusCode().value(), 400);
+        final ValidationException exception = assertThrows(
+                ValidationException.class,
+                () -> {
+                    ResponseEntity filmResponse = filmController.addFilm(film2);
+                });
 	}
 
 	@Test
@@ -247,5 +258,5 @@ class FilmorateApplicationTests {
 
 		assertEquals(filmResponse.getStatusCode().value(), 200);
 		assertTrue(filmResponse.getBody().toString().contains("name=updated film"));
-	}*/
+	}
 }
