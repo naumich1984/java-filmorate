@@ -59,15 +59,19 @@ public class FilmService {
 
         return filmStorage.allFilms().stream()
                 .sorted((o1, o2) -> {
-                            Integer o1Size = 0;
-                            Integer o2Size = 0;
-                            Optional<Set<Long>> o1O = Optional.ofNullable(filmStorage.getFilmsLikesStorage().get(o1.getId()));
-                            Optional<Set<Long>> o2O = Optional.ofNullable(filmStorage.getFilmsLikesStorage().get(o2.getId()));
-                            if (o1O.isPresent()) {o1Size = o1O.get().size();}
-                            if (o2O.isPresent()) {o2Size = o2O.get().size();}
+                    Integer o1Size = 0;
+                    Integer o2Size = 0;
+                    Optional<Set<Long>> o1O = Optional.ofNullable(filmStorage.getFilmsLikesStorage().get(o1.getId()));
+                    Optional<Set<Long>> o2O = Optional.ofNullable(filmStorage.getFilmsLikesStorage().get(o2.getId()));
+                    if (o1O.isPresent()) {
+                        o1Size = o1O.get().size();
+                    }
+                    if (o2O.isPresent()) {
+                        o2Size = o2O.get().size();
+                    }
 
-                            return o2Size - o1Size;
-                        })
+                    return o2Size - o1Size;
+                })
                 .limit(countTop)
                 .collect(Collectors.toList());
     }
@@ -76,7 +80,7 @@ public class FilmService {
         log.debug("filmId {}", filmId);
         try {
             return filmStorage.allFilms().stream().filter(f -> f.getId() == filmId).findFirst().get();
-        } catch(NoSuchElementException e) {
+        } catch (NoSuchElementException e) {
             throw new NoFilmFoundException(e.getMessage());
         }
     }
