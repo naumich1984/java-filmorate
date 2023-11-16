@@ -7,7 +7,10 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -65,15 +68,12 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     private void validationFilm(Film film) {
         log.debug("validation film");
-        Optional<Film> filmO = Optional.ofNullable(film);
-        if (filmO.isPresent()) {
-            log.debug("check releaseDate");
-            Optional<LocalDate> releaseDateO = Optional.ofNullable(filmO.get().getReleaseDate());
-            if (releaseDateO.isPresent() && releaseDateO.get().isBefore(minDateRelease)) {
+        try {
+            if (List.of(film).stream().filter(f -> f.getReleaseDate().isBefore(minDateRelease)).findFirst().isPresent()) {
                 log.error("adding film releaseDate is before " + minDateRelease.toString() + "!");
                 throw new ValidationException("adding film releaseDate is before " + minDateRelease.toString() + "!");
             }
-        } else {
+        } catch (NullPointerException e) {
             throw new ValidationException("adding film is null!");
         }
     }
