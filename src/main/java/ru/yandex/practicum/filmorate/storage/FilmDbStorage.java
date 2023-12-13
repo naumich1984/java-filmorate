@@ -114,17 +114,17 @@ public class FilmDbStorage implements FilmStorage {
         sqlQuery = "delete from genres_films where film_id = ?";
         jdbcTemplate.update(sqlQuery, film.getId());
 
-        List<Genre> GenresList = new ArrayList<>();
+        List<Genre> genresList = new ArrayList<>();
         if (film.getGenres() != null) {
             Long filmId = film.getId();
             Set<Genre> uniqueGenres = new HashSet<Genre>(film.getGenres());
-            GenresList.addAll(uniqueGenres);
+            genresList.addAll(uniqueGenres);
             for (Genre genre : uniqueGenres) {
                 String sqlQueryGenres = "insert into genres_films(film_id, genre_id) " + "values (?, ?)";
                 jdbcTemplate.update(sqlQueryGenres, filmId, genre.getId());
             }
         }
-        film.setGenres(GenresList);
+        film.setGenres(genresList);
 
         return film;
     }
