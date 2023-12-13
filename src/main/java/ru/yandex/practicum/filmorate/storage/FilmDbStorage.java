@@ -88,10 +88,10 @@ public class FilmDbStorage implements FilmStorage {
 
         if (film.getGenres() != null) {
             Long filmId = film.getId();
-            Set<Genre> uniqueGenres = new HashSet<Genre>(film.getGenres());
-            List<Genre> GenresList = new ArrayList<>();
-            GenresList.addAll(uniqueGenres);
-            GenresList.sort((o1, o2) -> o2.getId() - o1.getId());
+            Set<Genre> uniqueGenres = new HashSet<>(film.getGenres());
+            List<Genre> genresList = new ArrayList<>();
+            genresList.addAll(uniqueGenres);
+            genresList.sort((o1, o2) -> o2.getId() - o1.getId());
             for (Genre genre : uniqueGenres) {
                 String sqlQueryGenres = "insert into genres_films(film_id, genre_id) " + "values (?, ?)";
                 jdbcTemplate.update(sqlQueryGenres, filmId, genre.getId());
