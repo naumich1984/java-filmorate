@@ -36,7 +36,7 @@ public class UserDbStorage implements UserStorage {
         log.debug("allUsers");
         String sql = "select * from users";
         List<User> users = jdbcTemplate.query(sql, (rs, rowNum) -> getUserMapper(rs), null);
-        if(users.isEmpty()) {
+        if (users.isEmpty()) {
             return Collections.emptyList();
         }
 
@@ -48,7 +48,7 @@ public class UserDbStorage implements UserStorage {
         log.debug("getUser, userId {}", userId);
         String sql = "select * from users where id = ?";
         List<User> users = jdbcTemplate.query(sql, (rs, rowNum) -> getUserMapper(rs), userId);
-        if(users.isEmpty()) {
+        if (users.isEmpty()) {
             return null;
         }
 
@@ -91,12 +91,8 @@ public class UserDbStorage implements UserStorage {
         String sqlQuery = "update users set " +
                 "email = ?, login = ?, name = ? , birthday = ?" +
                 "where id = ?";
-        jdbcTemplate.update(sqlQuery
-                , userValidated.getEmail()
-                , userValidated.getLogin()
-                , userValidated.getName()
-                , userValidated.getBirthday()
-                ,userValidated.getId());
+        jdbcTemplate.update(sqlQuery, userValidated.getEmail(), userValidated.getLogin(), userValidated.getName(),
+                userValidated.getBirthday(), userValidated.getId());
 
         return userValidated;
     }
@@ -109,7 +105,7 @@ public class UserDbStorage implements UserStorage {
                 "FROM users u INNER JOIN friends f ON u.ID = f.USER_ID\n" +
                 "WHERE f.FRIENDSHIP_ID = 1 and u.ID = ?)";
         List<User> users = jdbcTemplate.query(sql, (rs, rowNum) -> getUserMapper(rs), userId);
-        if(users.isEmpty()) {
+        if (users.isEmpty()) {
             Collections.emptyList();
         }
 
@@ -120,7 +116,7 @@ public class UserDbStorage implements UserStorage {
         log.debug("existsUser, userId {}", userID);
         String sql = "select count(1) from users where id = ?";
         List<Integer> existsUser = jdbcTemplate.query(sql, (rs, rowNum) -> existsUserMapper(rs), userID);
-        if(existsUser.get(0) == countValue) {
+        if (existsUser.get(0) == countValue) {
             log.error(errorMessage);
             throw new NoUserFoundException(errorMessage);
         }
@@ -143,7 +139,7 @@ public class UserDbStorage implements UserStorage {
         List<Integer> existsFriendship = jdbcTemplate.query(sql, (rs, rowNum) -> existsUserMapper(rs),
                 userId, friendId, userId, friendId);
 
-        if(existsFriendship.isEmpty()) {
+        if (existsFriendship.isEmpty()) {
             // нет дружбы
             String sqlQuery = "insert into friends(user_id, friend_id, friendship_id) " +
                     "values (?, ?, ?)";
@@ -167,10 +163,7 @@ public class UserDbStorage implements UserStorage {
             String sqlQuery = "update friend set " +
                     "friendship_id = 2" +
                     "where user_id = ? and friend_id = ? ";
-
-            jdbcTemplate.update(sqlQuery
-                    , friendId
-                    , userId);
+            jdbcTemplate.update(sqlQuery, friendId, userId);
 
             return getUser(friendId);
         }
@@ -188,7 +181,7 @@ public class UserDbStorage implements UserStorage {
         List<Integer> existsFriendship = jdbcTemplate.query(sql, (rs, rowNum) -> existsUserMapper(rs),
                 userId, friendId, userId, friendId);
 
-        if(existsFriendship.isEmpty()) {
+        if (existsFriendship.isEmpty()) {
             // нет дружбы
             throw new NoFriednshipConfimException("Error adding friendship!");
         }
