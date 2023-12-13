@@ -5,10 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.yandex.practicum.filmorate.exception.NoFilmFoundException;
-import ru.yandex.practicum.filmorate.exception.NoUserFoundException;
-import ru.yandex.practicum.filmorate.exception.NoUserLikesFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.*;
 
 import java.util.Map;
 
@@ -59,6 +56,33 @@ public class ErrorHandler {
         log.debug("stacktrace ошибки:{}", e.getStackTrace());
 
         return Map.of("Ошибка поиска пользователя", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Friendship not found")
+    public Map<String, String> handleNoFriednshipConfimException(final NoFriednshipConfimException e) {
+        log.debug("Ошибка поиска дружбы:{}", e.getMessage());
+        log.debug("stacktrace ошибки:{}", e.getStackTrace());
+
+        return Map.of("Ошибка поиска дружбы", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Genre not found")
+    public Map<String, String> handleNoGenreFoundException(final NoGenreFoundException e) {
+        log.debug("Ошибка поиска дружбы:{}", e.getMessage());
+        log.debug("stacktrace ошибки:{}", e.getStackTrace());
+
+        return Map.of("Ошибка поиска дружбы", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Mpa not found")
+    public Map<String, String> handleNoMpaFoundException(final NoMpaFoundException e) {
+        log.debug("Ошибка поиска Mpa:{}", e.getMessage());
+        log.debug("stacktrace ошибки:{}", e.getStackTrace());
+
+        return Map.of("Ошибка поиска Mpa", e.getMessage());
     }
 
 }

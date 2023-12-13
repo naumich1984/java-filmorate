@@ -3,13 +3,14 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NoUserFoundException;
+import ru.yandex.practicum.filmorate.exception.NoUserLikesFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Component
+@Component("inMemoryUserStorage")
 @Slf4j
 public class InMemoryUserStorage implements UserStorage {
 
@@ -54,8 +55,67 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public Map<Long, Set<Long>> getUsersFriendsStorage() {
-        return usersRate;
+    public User getUser(Long userId) {
+        return this.allUsers().stream().filter(f -> f.getId() == userId).findFirst().get();
+    }
+
+    @Override
+    public List<User> getUserFriends(Long userId) {
+        log.debug("UserId {}", userId);
+        try {
+            Set<Long> userFriends = usersRate.get(userId);
+
+            return userFriends.stream()
+                    .map(idUser -> getUser(idUser))
+                    .collect(Collectors.toList());
+        } catch (NoSuchElementException e) {
+            throw new NoUserFoundException(e.getMessage());
+        }
+    }
+
+    @Override
+    public User addFriend(Long userId, Long friendId) {
+        if (getUser(userId) == null) {
+            throw new NoUserFoundException("User not found");
+        }
+        Set<Long> friendsList = Optional.ofNullable(usersRate.get(userId)).orElse(new HashSet<>());
+        log.debug("Add like to list");
+        if (allUsers().stream().filter(f -> f.getId() == friendId).findFirst().isPresent()) {
+            friendsList.add(friendId);
+            log.debug("Update film like-list");
+            usersRate.put(userId, friendsList);
+
+            Set<Long> friendFriendsList = Optional.ofNullable(usersRate
+                    .get(friendId)).orElse(new HashSet<>());
+            friendFriendsList.add(userId);
+            usersRate.put(friendId, friendFriendsList);
+        } else {
+            throw new NoUserFoundException("Friend not found");
+        }
+
+        return allUsers().stream().filter(f -> f.getId() == userId).findFirst().get();
+    }
+
+    @Override
+    public User deleteFriend(Long userId, Long friendId) {
+       Optional<Set<Long>> friendsListO = Optional.ofNullable(usersRate.get(userId));
+        if (!friendsListO.isPresent()) {
+            throw new NoUserLikesFoundException("User " + userId + " did not have any friends");
+        } else {
+            Optional<Long> likeExistO = friendsListO.get().stream().filter(f -> f.longValue() == friendId).findFirst();
+            if (likeExistO.isPresent()) {
+                friendsListO.get().removeIf(uId -> uId.longValue() == friendId);
+                usersRate.put(userId, friendsListO.get());
+
+                Optional<Set<Long>> friendFriendsListO = Optional.ofNullable(usersRate.get(friendId));
+                friendFriendsListO.get().removeIf(uId -> uId.longValue() == userId);
+                usersRate.put(friendId, friendFriendsListO.get());
+            } else {
+                throw new NoUserLikesFoundException("User " + userId + " did not have friend " + friendId);
+            }
+        }
+
+        return allUsers().stream().filter(f -> f.getId() == userId).findFirst().get();
     }
 
     private User validationUser(User user) {

@@ -24,6 +24,38 @@ public class FilmController {
         this.filmService = filmService;
     }
 
+
+    @GetMapping("/genres")
+    public ResponseEntity allGenres() {
+        log.debug("GET /genres request");
+
+        return ResponseEntity.ok(filmStorage.allGenres());
+    }
+
+
+    @GetMapping("/genres/{id}")
+    public ResponseEntity getGenre(@PathVariable int id) {
+        log.debug("GET /genres/{id} request");
+
+        return ResponseEntity.ok(filmService.getGenre(id));
+    }
+
+    @GetMapping("/mpa")
+    public ResponseEntity allMpa() {
+        log.debug("GET /mpa request");
+
+        return ResponseEntity.ok(filmStorage.allMpa());
+    }
+
+
+    @GetMapping("/mpa/{id}")
+    public ResponseEntity getMpa(@PathVariable Integer id) {
+        log.debug("GET /mpa/{id} request");
+
+        return ResponseEntity.ok(filmService.getMpa(id));
+    }
+
+
     @GetMapping("/films")
     public ResponseEntity allFilms() {
         log.debug("GET /films request");
@@ -40,7 +72,7 @@ public class FilmController {
 
     @PutMapping("/films")
     public ResponseEntity updateFilm(@RequestBody @Valid @NotNull Film film) {
-        log.debug("PUT /users request");
+        log.debug("PUT /films request");
 
         return ResponseEntity.ok(filmStorage.updateFilm(film));
     }
@@ -70,7 +102,7 @@ public class FilmController {
     public ResponseEntity getFilm(@PathVariable long id) {
         log.debug("GET /films/{id} request");
 
-        return ResponseEntity.ok(filmService.getFilmById(id));
+        return ResponseEntity.ok(filmService.getFilm(id));
     }
 
 }
