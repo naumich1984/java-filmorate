@@ -128,6 +128,7 @@ public class UserDbStorage implements UserStorage {
 
     private Integer existsUserMapper(ResultSet rs) throws SQLException {
         log.debug("existsUserMapper");
+
         return rs.getInt(1);
     }
 
