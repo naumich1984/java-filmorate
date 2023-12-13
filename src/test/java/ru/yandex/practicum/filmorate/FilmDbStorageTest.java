@@ -44,6 +44,7 @@ class FilmDbStorageTest {
         filmStorage = new FilmDbStorage(jdbcTemplate);
         userStorage = new UserDbStorage(jdbcTemplate);
     }
+
     @Test
     public void testFindFilmById() {
         // Подготавливаем данные для теста
