@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,16 +23,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component("filmDbStorage")
+@RequiredArgsConstructor
 @Primary
 @Slf4j
 public class FilmDbStorage implements FilmStorage {
 
     private final LocalDate minDateRelease = LocalDate.parse("1895-12-28");
     private final JdbcTemplate jdbcTemplate;
-
-    public FilmDbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     @Override
     public List<Film> allFilms() {

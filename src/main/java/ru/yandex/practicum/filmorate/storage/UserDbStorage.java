@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,15 +22,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Component("userDbStorage")
+@RequiredArgsConstructor
 @Primary
 @Slf4j
 public class UserDbStorage implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
-
-    public UserDbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     @Override
     public List<User> allUsers() {
