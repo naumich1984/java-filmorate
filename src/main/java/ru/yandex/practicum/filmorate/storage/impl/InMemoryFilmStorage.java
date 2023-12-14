@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -48,7 +49,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public List<Film> getTopNfilms(Integer count) {
-        int countTop = Optional.ofNullable(count).orElse(countTopFilm);
+        int countTop = count != null ? count : countTopFilm;
         log.debug("top films count = {}", countTop);
 
         return getAllFilms().stream()

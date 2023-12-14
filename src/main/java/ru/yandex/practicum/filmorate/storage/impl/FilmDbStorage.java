@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +13,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 public class FilmDbStorage implements FilmStorage {
 
     private final LocalDate minDateRelease = LocalDate.parse("1895-12-28");
+    private final int countTopFilm = 10;
     private final JdbcTemplate jdbcTemplate;
 
     @Override
@@ -275,14 +277,15 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getTopNfilms(Integer count) {
-        log.debug("getTopNfilms, count {}", count);
+        int countTop = count != null ? count : countTopFilm;
+        log.debug("getTopNfilms, count {}", countTop);
         String sqlQuery = "select ftop.id, ftop.name, ftop.description, ftop.release_date, ftop.duration,\n"
                 + "    (select string_agg(genre_id::text, ',') from genres_films gf where ftop.id = gf.film_id) genres, ftop.mpa_id,\n"
                 + "    (select m.mpa_name from mpa m where m.id = ftop.mpa_id) mpa_name \n"
                 + "    from films ftop,(select f.id, count(fl.film_id) cnt from films f left join films_likes fl on f.id = fl.film_id \n"
                 + "    group by f.id order by 2 desc limit ? ) fgroup where ftop.id = fgroup.id ";
 
-        List<Film> films = jdbcTemplate.query(sqlQuery, (rs, rowNum) -> getFilmMapper(rs), count);
+        List<Film> films = jdbcTemplate.query(sqlQuery, (rs, rowNum) -> getFilmMapper(rs), countTop);
 
         return films;
     }
