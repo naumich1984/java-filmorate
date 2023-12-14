@@ -162,6 +162,7 @@ public class FilmDbStorage implements FilmStorage {
 
     private Mpa getMpaMapper(ResultSet rs) throws SQLException {
         log.debug("getMpaMapper");
+
         return new Mpa(rs.getInt("id"), rs.getString("mpa_name"));
     }
 

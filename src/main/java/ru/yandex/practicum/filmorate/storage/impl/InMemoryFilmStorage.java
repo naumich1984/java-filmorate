@@ -3,11 +3,13 @@ package ru.yandex.practicum.filmorate.storage.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NoFilmFoundException;
+import ru.yandex.practicum.filmorate.exception.NoUserFoundException;
 import ru.yandex.practicum.filmorate.exception.NoUserLikesFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.time.LocalDate;
@@ -44,7 +46,11 @@ public class InMemoryFilmStorage implements FilmStorage {
         log.debug("Update film like-list");
         filmsRate.put(filmId, likesList);
 
-        return getAllFilms().stream().filter(f -> f.getId() == filmId).findFirst().get();
+        Optional<Film> filmO = getFilmById(filmId);
+        if (filmO.isPresent()) {
+            return filmO.get();
+        }
+        throw new NoFilmFoundException("Film not found!");
     }
 
     @Override
@@ -87,7 +93,11 @@ public class InMemoryFilmStorage implements FilmStorage {
             }
         }
 
-        return getAllFilms().stream().filter(f -> f.getId() == filmId).findFirst().get();
+        Optional<Film> filmO = getFilmById(filmId);
+        if (filmO.isPresent()) {
+            return filmO.get();
+        }
+        throw new NoFilmFoundException("Film not found!");
     }
 
     @Override
@@ -131,11 +141,15 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film getFilm(Long filmId) {
-        try {
-            return getAllFilms().stream().filter(f -> f.getId() == filmId).findFirst().get();
-        } catch (NoSuchElementException e) {
-            throw new NoFilmFoundException(e.getMessage());
+        Optional<Film> filmO = getFilmById(filmId);
+        if (filmO.isPresent()) {
+            return filmO.get();
         }
+        throw new NoFilmFoundException("Film not found!");
+    }
+
+    private Optional<Film> getFilmById(Long filmId) {
+        return this.getAllFilms().stream().filter(f -> f.getId() == filmId).findFirst();
     }
 
     private void validateFilm(Film film) {

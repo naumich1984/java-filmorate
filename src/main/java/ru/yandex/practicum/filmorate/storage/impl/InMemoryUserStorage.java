@@ -37,6 +37,7 @@ public class InMemoryUserStorage implements UserStorage {
         log.debug("set user id {}", user.getId());
         users.put(user.getId(), userValidated);
         log.debug("Put user into map");
+
         return userValidated;
     }
 
@@ -57,7 +58,11 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getUser(Long userId) {
-        return this.getAllUsers().stream().filter(f -> f.getId() == userId).findFirst().get();
+        Optional<User> userO = getUserById(userId);
+        if (userO.isPresent()) {
+            return userO.get();
+        }
+        throw new NoUserFoundException("User not found!");
     }
 
     @Override
@@ -81,7 +86,7 @@ public class InMemoryUserStorage implements UserStorage {
         }
         Set<Long> friendsList = Optional.ofNullable(usersRate.get(userId)).orElse(new HashSet<>());
         log.debug("Add like to list");
-        if (getAllUsers().stream().filter(f -> f.getId() == friendId).findFirst().isPresent()) {
+        if (getUserById(friendId).isPresent()) {
             friendsList.add(friendId);
             log.debug("Update film like-list");
             usersRate.put(userId, friendsList);
@@ -94,7 +99,11 @@ public class InMemoryUserStorage implements UserStorage {
             throw new NoUserFoundException("Friend not found");
         }
 
-        return getAllUsers().stream().filter(f -> f.getId() == userId).findFirst().get();
+        Optional<User> userO = getUserById(userId);
+        if (userO.isPresent()) {
+            return userO.get();
+        }
+        throw new NoUserFoundException("User not found!");
     }
 
     @Override
@@ -116,7 +125,15 @@ public class InMemoryUserStorage implements UserStorage {
             }
         }
 
-        return getAllUsers().stream().filter(f -> f.getId() == userId).findFirst().get();
+        Optional<User> userO = getUserById(userId);
+        if (userO.isPresent()) {
+            return userO.get();
+        }
+        throw new NoUserFoundException("User not found!");
+    }
+
+    private Optional<User> getUserById(Long userId) {
+        return this.getAllUsers().stream().filter(f -> f.getId() == userId).findFirst();
     }
 
     private User validateUser(User user) {
