@@ -51,7 +51,7 @@ class UserDbStorageTest {
         userStorage.addUser(newUser);
 
         // вызываем тестируемый метод
-        User savedUser = userStorage.allUsers().get(0);
+        User savedUser = userStorage.getAllUsers().get(0);
 
         // проверяем утверждения
         assertThat(savedUser)

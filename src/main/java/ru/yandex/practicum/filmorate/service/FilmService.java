@@ -32,7 +32,7 @@ public class FilmService {
         log.debug("genreId {}", genreId);
         log.debug("Get Genre");
         try {
-            return filmStorage.allGenres().stream()
+            return filmStorage.getAllGenres().stream()
                     .filter(f -> f.getId().equals(genreId)).findFirst().get();
         } catch (NoSuchElementException ex) {
             throw new NoGenreFoundException(ex.getMessage());
@@ -43,7 +43,7 @@ public class FilmService {
         log.debug("mpaId {}", mpaId);
         log.debug("Get Mpa");
         try {
-            return filmStorage.allMpa().stream()
+            return filmStorage.getAllMpa().stream()
                     .filter(f -> f.getId().equals(mpaId)).findFirst().get();
         } catch (NoSuchElementException ex) {
             throw new NoGenreFoundException(ex.getMessage());

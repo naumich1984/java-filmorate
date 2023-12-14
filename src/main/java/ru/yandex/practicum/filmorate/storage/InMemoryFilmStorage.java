@@ -24,12 +24,12 @@ public class InMemoryFilmStorage implements FilmStorage {
     private final int countTopFilm = 10;
 
     @Override
-    public List<Genre> allGenres() {
+    public List<Genre> getAllGenres() {
         throw new UnsupportedOperationException("Unsupported!");
     }
 
     @Override
-    public List<Mpa> allMpa() {
+    public List<Mpa> getAllMpa() {
         throw new UnsupportedOperationException("Unsupported!");
     }
 
@@ -43,7 +43,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         log.debug("Update film like-list");
         filmsRate.put(filmId, likesList);
 
-        return allFilms().stream().filter(f -> f.getId() == filmId).findFirst().get();
+        return getAllFilms().stream().filter(f -> f.getId() == filmId).findFirst().get();
     }
 
     @Override
@@ -51,7 +51,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         int countTop = Optional.ofNullable(count).orElse(countTopFilm);
         log.debug("top films count = {}", countTop);
 
-        return allFilms().stream()
+        return getAllFilms().stream()
                 .sorted((o1, o2) -> {
                     Integer o1Size = 0;
                     Integer o2Size = 0;
@@ -86,18 +86,18 @@ public class InMemoryFilmStorage implements FilmStorage {
             }
         }
 
-        return allFilms().stream().filter(f -> f.getId() == filmId).findFirst().get();
+        return getAllFilms().stream().filter(f -> f.getId() == filmId).findFirst().get();
     }
 
     @Override
-    public List<Film> allFilms() {
+    public List<Film> getAllFilms() {
         return films.values().stream().collect(Collectors.toList());
     }
 
     @Override
     public Film addFilm(Film film) {
         log.debug(film.toString());
-        validationFilm(film);
+        validateFilm(film);
         log.debug("add film validation success");
         Film filmValidated = film;
         if (films.values().stream().filter(f -> f.equals(filmValidated)).findFirst().isPresent()) {
@@ -116,7 +116,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film updateFilm(Film film) {
         log.debug(film.toString());
-        validationFilm(film);
+        validateFilm(film);
         log.debug("update film validation success");
         if (!films.keySet().stream().filter(k -> k.equals(film.getId())).findFirst().isPresent()) {
             log.error("updating film not exists!");
@@ -131,13 +131,13 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film getFilm(Long filmId) {
         try {
-            return allFilms().stream().filter(f -> f.getId() == filmId).findFirst().get();
+            return getAllFilms().stream().filter(f -> f.getId() == filmId).findFirst().get();
         } catch (NoSuchElementException e) {
             throw new NoFilmFoundException(e.getMessage());
         }
     }
 
-    private void validationFilm(Film film) {
+    private void validateFilm(Film film) {
         log.debug("validation film");
         try {
             if (List.of(film).stream().filter(f -> f.getReleaseDate().isBefore(minDateRelease)).findFirst().isPresent()) {

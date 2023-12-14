@@ -30,8 +30,8 @@ public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<User> allUsers() {
-        log.debug("allUsers");
+    public List<User> getAllUsers() {
+        log.debug("getAllUsers");
         String sql = "select * from users";
         List<User> users = jdbcTemplate.query(sql, (rs, rowNum) -> getUserMapper(rs), null);
         if (users.isEmpty()) {
@@ -64,7 +64,7 @@ public class UserDbStorage implements UserStorage {
     public User addUser(User user) {
         log.debug("addUser, userId {}", user.getId());
         existsUser(user.getId(), "adding user already exists!", 1);
-        User userValidated = validationUser(user);
+        User userValidated = validateUser(user);
         String sqlQuery = "insert into users(email, login, name, birthday) " +
                 "values (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -85,7 +85,7 @@ public class UserDbStorage implements UserStorage {
     public User updateUser(User user) {
         log.debug("updateUser, userId {}", user.getId());
         existsUser(user.getId(), "updating user not exists!", 0);
-        User userValidated = validationUser(user);
+        User userValidated = validateUser(user);
         String sqlQuery = "update users set " +
                 "email = ?, login = ?, name = ? , birthday = ?" +
                 "where id = ?";
@@ -189,7 +189,7 @@ public class UserDbStorage implements UserStorage {
         return getUser(friendId);
     }
 
-    private User validationUser(User user) {
+    private User validateUser(User user) {
         log.debug("validation user");
         Optional<User> userO = Optional.ofNullable(user);
         if (userO.isPresent()) {

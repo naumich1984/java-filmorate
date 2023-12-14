@@ -19,14 +19,14 @@ public class InMemoryUserStorage implements UserStorage {
     private Long idUserSequence = 1L;
 
     @Override
-    public List<User> allUsers() {
+    public List<User> getAllUsers() {
         return users.values().stream().collect(Collectors.toList());
     }
 
     @Override
     public User addUser(User user) {
         log.debug(user.toString());
-        User userValidated = validationUser(user);
+        User userValidated = validateUser(user);
         log.debug("add user validation success");
         if (users.values().stream().filter(u -> u.equals(user)).findFirst().isPresent()) {
             log.error("adding user already exists!");
@@ -42,7 +42,7 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User updateUser(User user) {
         log.debug(user.toString());
-        User userValidated = validationUser(user);
+        User userValidated = validateUser(user);
         log.debug("update user validation success");
         if (!users.keySet().stream().filter(k -> k.equals(userValidated.getId())).findFirst().isPresent()) {
             log.error("updating user not exists!");
@@ -56,7 +56,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getUser(Long userId) {
-        return this.allUsers().stream().filter(f -> f.getId() == userId).findFirst().get();
+        return this.getAllUsers().stream().filter(f -> f.getId() == userId).findFirst().get();
     }
 
     @Override
@@ -80,7 +80,7 @@ public class InMemoryUserStorage implements UserStorage {
         }
         Set<Long> friendsList = Optional.ofNullable(usersRate.get(userId)).orElse(new HashSet<>());
         log.debug("Add like to list");
-        if (allUsers().stream().filter(f -> f.getId() == friendId).findFirst().isPresent()) {
+        if (getAllUsers().stream().filter(f -> f.getId() == friendId).findFirst().isPresent()) {
             friendsList.add(friendId);
             log.debug("Update film like-list");
             usersRate.put(userId, friendsList);
@@ -93,7 +93,7 @@ public class InMemoryUserStorage implements UserStorage {
             throw new NoUserFoundException("Friend not found");
         }
 
-        return allUsers().stream().filter(f -> f.getId() == userId).findFirst().get();
+        return getAllUsers().stream().filter(f -> f.getId() == userId).findFirst().get();
     }
 
     @Override
@@ -115,10 +115,10 @@ public class InMemoryUserStorage implements UserStorage {
             }
         }
 
-        return allUsers().stream().filter(f -> f.getId() == userId).findFirst().get();
+        return getAllUsers().stream().filter(f -> f.getId() == userId).findFirst().get();
     }
 
-    private User validationUser(User user) {
+    private User validateUser(User user) {
         log.debug("validation user");
         Optional<User> userO = Optional.ofNullable(user);
         if (userO.isPresent()) {

@@ -28,7 +28,7 @@ public class UserController {
     public ResponseEntity allUsers() {
         log.debug("GET /users request");
 
-        return ResponseEntity.ok(userStorage.allUsers());
+        return ResponseEntity.ok(userStorage.getAllUsers());
     }
 
     @PostMapping("/users")

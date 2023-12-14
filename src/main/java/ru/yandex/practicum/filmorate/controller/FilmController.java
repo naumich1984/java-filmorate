@@ -29,7 +29,7 @@ public class FilmController {
     public ResponseEntity allGenres() {
         log.debug("GET /genres request");
 
-        return ResponseEntity.ok(filmStorage.allGenres());
+        return ResponseEntity.ok(filmStorage.getAllGenres());
     }
 
 
@@ -44,7 +44,7 @@ public class FilmController {
     public ResponseEntity allMpa() {
         log.debug("GET /mpa request");
 
-        return ResponseEntity.ok(filmStorage.allMpa());
+        return ResponseEntity.ok(filmStorage.getAllMpa());
     }
 
 
@@ -60,7 +60,7 @@ public class FilmController {
     public ResponseEntity allFilms() {
         log.debug("GET /films request");
 
-        return ResponseEntity.ok(filmStorage.allFilms());
+        return ResponseEntity.ok(filmStorage.getAllFilms());
     }
 
     @PostMapping("/films")

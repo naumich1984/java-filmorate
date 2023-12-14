@@ -66,7 +66,7 @@ class FilmDbStorageTest {
         filmStorage.addFilm(newFilm);
 
         // вызываем тестируемый метод
-        Film savedFilm = filmStorage.allFilms().get(0);
+        Film savedFilm = filmStorage.getAllFilms().get(0);
 
         // проверяем утверждения
         assertThat(savedFilm)
@@ -128,7 +128,7 @@ class FilmDbStorageTest {
         // Подготавливаем данные для теста
 
         // вызываем тестируемый метод
-        Genre genre = filmStorage.allGenres().get(0);
+        Genre genre = filmStorage.getAllGenres().get(0);
 
         // проверяем утверждения
         assertThat(genre)
@@ -142,7 +142,7 @@ class FilmDbStorageTest {
         // Подготавливаем данные для теста
 
         // вызываем тестируемый метод
-        Mpa mpa = filmStorage.allMpa().get(0);
+        Mpa mpa = filmStorage.getAllMpa().get(0);
 
         // проверяем утверждения
         assertThat(mpa)

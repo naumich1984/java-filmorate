@@ -32,8 +32,8 @@ public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<Film> allFilms() {
-        log.debug("allFilms");
+    public List<Film> getAllFilms() {
+        log.debug("getAllFilms");
         String sql = "SELECT f.ID, f.NAME, f.DESCRIPTION, f.RELEASE_DATE, f.DURATION, \n"
                 + "(select string_agg(genre_id::text, ',') from GENRES_FILMS gf WHERE f.ID = gf.FILM_ID) GENRES, f.MPA_ID,\n"
                 + "(select m.mpa_name from mpa m where m.id = f.MPA_ID) mpa_name FROM FILMS f ";
@@ -50,7 +50,7 @@ public class FilmDbStorage implements FilmStorage {
         List<Genre> genresList;
         if (rs.getString("genres") != null) {
             genresList = Arrays.stream(Optional.ofNullable(rs.getString("genres")).orElse("").split(","))
-                    .map(f -> allGenres().stream().filter(g -> g.getId().equals(Integer.parseInt(f)))
+                    .map(f -> getAllGenres().stream().filter(g -> g.getId().equals(Integer.parseInt(f)))
                     .findFirst().get())
                     .collect(Collectors.toList());
         } else {
@@ -69,7 +69,7 @@ public class FilmDbStorage implements FilmStorage {
     public Film addFilm(Film film) {
         log.debug("addFilm, filmId {}", film.getId());
         existsFilm(film.getId(), "adding film already exists!", 1);
-        validationFilm(film);
+        validateFilm(film);
         String sqlQuery = "insert into films(name, description, release_date, duration, mpa_id) "
                 + "values (?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -103,7 +103,7 @@ public class FilmDbStorage implements FilmStorage {
     public Film updateFilm(Film film) {
         log.debug("updateFilm, filmId {}", film.getId());
         existsFilm(film.getId(), "updating film not exists!", 0);
-        validationFilm(film);
+        validateFilm(film);
         String sqlQuery = "update films set " + "name = ?, description = ?, release_date = ? , duration = ?, mpa_id = ?"
                 + "where id = ?";
         jdbcTemplate.update(sqlQuery, film.getName(), film.getDescription(), film.getReleaseDate(),
@@ -128,8 +128,8 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Genre> allGenres() {
-        log.debug("allGenres");
+    public List<Genre> getAllGenres() {
+        log.debug("getAllGenres");
         String sql = "select * from genres";
         List<Genre> genres = jdbcTemplate.query(sql, (rs, rowNum) -> getGenreMapper(rs), null);
         if (genres.isEmpty()) {
@@ -146,8 +146,8 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Mpa> allMpa() {
-        log.debug("allMpa");
+    public List<Mpa> getAllMpa() {
+        log.debug("getAllMpa");
         String sql = "select * from mpa";
         List<Mpa> mpaList = jdbcTemplate.query(sql, (rs, rowNum) -> getMpaMapper(rs), null);
         if (mpaList.isEmpty()) {
@@ -193,7 +193,7 @@ public class FilmDbStorage implements FilmStorage {
         return films.get(0);
     }
 
-    private void validationFilm(Film film) {
+    private void validateFilm(Film film) {
         log.debug("validation film");
         try {
             if (List.of(film).stream().filter(f -> f.getReleaseDate().isBefore(minDateRelease)).findFirst().isPresent()) {

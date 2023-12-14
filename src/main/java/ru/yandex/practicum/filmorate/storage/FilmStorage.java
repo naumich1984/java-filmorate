@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface FilmStorage {
 
-    List<Film> allFilms();
+    List<Film> getAllFilms();
 
     Film addFilm(Film film);
 
@@ -16,9 +16,9 @@ public interface FilmStorage {
 
     Film getFilm(Long filmId);
 
-    List<Genre> allGenres();
+    List<Genre> getAllGenres();
 
-    List<Mpa> allMpa();
+    List<Mpa> getAllMpa();
 
     Film addLikeToFilm(Long filmId, Long userId);
 
