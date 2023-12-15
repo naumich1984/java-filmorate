@@ -106,7 +106,7 @@ class FilmDbStorageTest {
     }
 
     @Test
-    public void getTopNfilms() {
+    public void testGetTopNfilms() {
         // Подготавливаем данные для теста
         filmStorage.addFilm(newFilm);
         userStorage.addUser(newUser);
@@ -124,7 +124,7 @@ class FilmDbStorageTest {
     }
 
     @Test
-    public void getAllGenres() {
+    public void testGetAllGenres() {
         // Подготавливаем данные для теста
 
         // вызываем тестируемый метод
@@ -138,7 +138,7 @@ class FilmDbStorageTest {
     }
 
     @Test
-    public void getAllMpa() {
+    public void testGetAllMpa() {
         // Подготавливаем данные для теста
 
         // вызываем тестируемый метод
@@ -152,7 +152,7 @@ class FilmDbStorageTest {
     }
 
     @Test
-    public void addLikeToFilm() {
+    public void testAddLikeToFilm() {
         // Подготавливаем данные для теста
         filmStorage.addFilm(newFilm);
         userStorage.addUser(newUser);
@@ -168,7 +168,7 @@ class FilmDbStorageTest {
     }
 
     @Test
-    public void deleteLikeFromFilm() {
+    public void testDeleteLikeFromFilm() {
         // Подготавливаем данные для теста
         filmStorage.addFilm(newFilm);
         filmStorage.addFilm(newFilm2);
