@@ -12,8 +12,8 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.impl.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.impl.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import javax.validation.ConstraintViolation;
@@ -26,7 +26,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class FilmorateApplicationTests {
+class FilmorateApplicationTest {
 
     @Test
     void mockTest() {
@@ -70,7 +70,7 @@ class FilmorateApplicationTests {
     //---User Tests----------------------------------------------------------------------
     @Test
     void shouldGetAllUsers_whenGetRequest() {
-        userResponse = userController.allUsers();
+        userResponse = userController.getAllUsers();
 
         assertEquals(userResponse.getStatusCode().value(), 200);
         assertTrue(userResponse.getBody().toString().contains(user.toString()));
@@ -160,7 +160,7 @@ class FilmorateApplicationTests {
     //---Film Tests----------------------------------------------------------------------
     @Test
     void shouldGetAllFilms_whenGetRequest() {
-        filmResponse = filmController.allFilms();
+        filmResponse = filmController.getAllFilms();
 
         assertEquals(filmResponse.getStatusCode().value(), 200);
         assertTrue(filmResponse.getBody().toString().contains(film.toString()));

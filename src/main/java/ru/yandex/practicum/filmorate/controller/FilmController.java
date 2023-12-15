@@ -24,11 +24,43 @@ public class FilmController {
         this.filmService = filmService;
     }
 
+
+    @GetMapping("/genres")
+    public ResponseEntity getAllGenres() {
+        log.debug("GET /genres request");
+
+        return ResponseEntity.ok(filmStorage.getAllGenres());
+    }
+
+
+    @GetMapping("/genres/{id}")
+    public ResponseEntity getGenre(@PathVariable int id) {
+        log.debug("GET /genres/{id} request");
+
+        return ResponseEntity.ok(filmService.getGenre(id));
+    }
+
+    @GetMapping("/mpa")
+    public ResponseEntity getAllMpa() {
+        log.debug("GET /mpa request");
+
+        return ResponseEntity.ok(filmStorage.getAllMpa());
+    }
+
+
+    @GetMapping("/mpa/{id}")
+    public ResponseEntity getMpa(@PathVariable Integer id) {
+        log.debug("GET /mpa/{id} request");
+
+        return ResponseEntity.ok(filmService.getMpa(id));
+    }
+
+
     @GetMapping("/films")
-    public ResponseEntity allFilms() {
+    public ResponseEntity getAllFilms() {
         log.debug("GET /films request");
 
-        return ResponseEntity.ok(filmStorage.allFilms());
+        return ResponseEntity.ok(filmStorage.getAllFilms());
     }
 
     @PostMapping("/films")
@@ -40,7 +72,7 @@ public class FilmController {
 
     @PutMapping("/films")
     public ResponseEntity updateFilm(@RequestBody @Valid @NotNull Film film) {
-        log.debug("PUT /users request");
+        log.debug("PUT /films request");
 
         return ResponseEntity.ok(filmStorage.updateFilm(film));
     }
@@ -60,7 +92,7 @@ public class FilmController {
     }
 
     @GetMapping("/films/popular")
-    public ResponseEntity topFilms(@RequestParam(required = false) Integer count) {
+    public ResponseEntity getTopFilms(@RequestParam(required = false) Integer count) {
         log.debug("GET /films/popular?count={count} request");
 
         return ResponseEntity.ok(filmService.getTopNfilms(count));
@@ -70,7 +102,7 @@ public class FilmController {
     public ResponseEntity getFilm(@PathVariable long id) {
         log.debug("GET /films/{id} request");
 
-        return ResponseEntity.ok(filmService.getFilmById(id));
+        return ResponseEntity.ok(filmService.getFilm(id));
     }
 
 }

@@ -25,10 +25,10 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity allUsers() {
+    public ResponseEntity getAllUsers() {
         log.debug("GET /users request");
 
-        return ResponseEntity.ok(userStorage.allUsers());
+        return ResponseEntity.ok(userStorage.getAllUsers());
     }
 
     @PostMapping("/users")
