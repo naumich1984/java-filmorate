@@ -26,7 +26,7 @@ public class FilmController {
 
 
     @GetMapping("/genres")
-    public ResponseEntity allGenres() {
+    public ResponseEntity getAllGenres() {
         log.debug("GET /genres request");
 
         return ResponseEntity.ok(filmStorage.getAllGenres());
@@ -41,7 +41,7 @@ public class FilmController {
     }
 
     @GetMapping("/mpa")
-    public ResponseEntity allMpa() {
+    public ResponseEntity getAllMpa() {
         log.debug("GET /mpa request");
 
         return ResponseEntity.ok(filmStorage.getAllMpa());
@@ -57,7 +57,7 @@ public class FilmController {
 
 
     @GetMapping("/films")
-    public ResponseEntity allFilms() {
+    public ResponseEntity getAllFilms() {
         log.debug("GET /films request");
 
         return ResponseEntity.ok(filmStorage.getAllFilms());
@@ -92,7 +92,7 @@ public class FilmController {
     }
 
     @GetMapping("/films/popular")
-    public ResponseEntity topFilms(@RequestParam(required = false) Integer count) {
+    public ResponseEntity getTopFilms(@RequestParam(required = false) Integer count) {
         log.debug("GET /films/popular?count={count} request");
 
         return ResponseEntity.ok(filmService.getTopNfilms(count));

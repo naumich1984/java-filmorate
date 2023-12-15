@@ -70,7 +70,7 @@ class FilmorateApplicationTest {
     //---User Tests----------------------------------------------------------------------
     @Test
     void shouldGetAllUsers_whenGetRequest() {
-        userResponse = userController.allUsers();
+        userResponse = userController.getAllUsers();
 
         assertEquals(userResponse.getStatusCode().value(), 200);
         assertTrue(userResponse.getBody().toString().contains(user.toString()));
@@ -160,7 +160,7 @@ class FilmorateApplicationTest {
     //---Film Tests----------------------------------------------------------------------
     @Test
     void shouldGetAllFilms_whenGetRequest() {
-        filmResponse = filmController.allFilms();
+        filmResponse = filmController.getAllFilms();
 
         assertEquals(filmResponse.getStatusCode().value(), 200);
         assertTrue(filmResponse.getBody().toString().contains(film.toString()));
