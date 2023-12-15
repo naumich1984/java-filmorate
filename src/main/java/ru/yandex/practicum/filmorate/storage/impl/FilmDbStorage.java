@@ -36,10 +36,27 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public List<Film> getAllFilms() {
         log.debug("getAllFilms");
-        String sql = "SELECT f.ID, f.NAME, f.DESCRIPTION, f.RELEASE_DATE, f.DURATION, \n"
-                + "(select string_agg(genre_id::text, ',') from GENRES_FILMS gf WHERE f.ID = gf.FILM_ID) GENRES, f.MPA_ID,\n"
-                + "(select m.mpa_name from mpa m where m.id = f.MPA_ID) mpa_name FROM FILMS f ";
-        List<Film> films = jdbcTemplate.query(sql, (rs, rowNum) -> getFilmMapper(rs), null);
+        String sqlQuery = "select " +
+                "   f.id, " +
+                "   f.name, " +
+                "   f.description, " +
+                "   f.release_date, " +
+                "   f.duration, " +
+                "   string_agg(gf.genre_id::text, ',') as genres, " +
+                "   f.mpa_id, " +
+                "   m.mpa_name " +
+                "from films f " +
+                "left join genres_films gf on f.id = gf.film_id " +
+                "inner join mpa m on m.id = f.mpa_id " +
+                "group by " +
+                "   f.id, " +
+                "   f.name, " +
+                "   f.description, " +
+                "   f.release_date, " +
+                "   f.duration, " +
+                "   f.mpa_id, " +
+                "   m.mpa_name ";
+        List<Film> films = jdbcTemplate.query(sqlQuery, (rs, rowNum) -> getFilmMapper(rs), null);
         if (films.isEmpty()) {
             return Collections.emptyList();
         }
@@ -185,10 +202,27 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film getFilm(Long filmId) {
         log.debug("getFilm, filmId {}", filmId);
-        String sql = "SELECT f.ID, f.NAME, f.DESCRIPTION, f.RELEASE_DATE, f.DURATION, \n"
-                + "(select string_agg(genre_id::text, ',') from GENRES_FILMS gf WHERE f.ID = gf.FILM_ID) GENRES, f.MPA_ID,\n"
-                + "(select m.mpa_name from mpa m where m.id = f.MPA_ID) mpa_name FROM FILMS f where id = ?";
-        List<Film> films = jdbcTemplate.query(sql, (rs, rowNum) -> getFilmMapper(rs), filmId);
+        String sqlQuery = "select " +
+                "   f.id, " +
+                "   f.name, " +
+                "   f.description, " +
+                "   f.release_date, " +
+                "   f.duration, " +
+                "   string_agg(gf.genre_id::text, ',') as genres, " +
+                "   f.mpa_id, " +
+                "   m.mpa_name " +
+                "from films f " +
+                "left join genres_films gf on f.id = gf.film_id " +
+                "inner join mpa m on m.id = f.mpa_id where f.id = ? " +
+                "group by " +
+                "   f.id, " +
+                "   f.name, " +
+                "   f.description, " +
+                "   f.release_date, " +
+                "   f.duration, " +
+                "   f.mpa_id, " +
+                "   m.mpa_name ";
+        List<Film> films = jdbcTemplate.query(sqlQuery, (rs, rowNum) -> getFilmMapper(rs), filmId);
         if (films.isEmpty()) {
             throw new NoFilmFoundException("Film not found!");
         }
@@ -280,11 +314,45 @@ public class FilmDbStorage implements FilmStorage {
     public List<Film> getTopNfilms(Integer count) {
         int countTop = count != null ? count : countTopFilm;
         log.debug("getTopNfilms, count {}", countTop);
-        String sqlQuery = "select ftop.id, ftop.name, ftop.description, ftop.release_date, ftop.duration,\n"
-                + "    (select string_agg(genre_id::text, ',') from genres_films gf where ftop.id = gf.film_id) genres, ftop.mpa_id,\n"
-                + "    (select m.mpa_name from mpa m where m.id = ftop.mpa_id) mpa_name \n"
-                + "    from films ftop,(select f.id, count(fl.film_id) cnt from films f left join films_likes fl on f.id = fl.film_id \n"
-                + "    group by f.id order by 2 desc limit ? ) fgroup where ftop.id = fgroup.id ";
+        String sqlQuery = "select\n" +
+                "   ff.id, \n" +
+                "   ff.name, \n" +
+                "   ff.description, \n" +
+                "   ff.release_date, \n" +
+                "   ff.duration,\n" +
+                "   ff.genres, \n" +
+                "   ff.mpa_id,\n" +
+                "   ff.mpa_name,\n" +
+                "   count(fl.film_id) as cnt_likes\n" +
+                "from\n" +
+                "( select f.id, \n" +
+                "    f.name, \n" +
+                "    f.description, \n" +
+                "    f.release_date, \n" +
+                "    f.duration,\n" +
+                "    string_agg(gf.genre_id::text, ',') as genres, \n" +
+                "    f.mpa_id,\n" +
+                "    m.mpa_name\n" +
+                "    from films f left join genres_films gf \n" +
+                "    on f.id = gf.film_id inner join mpa m on m.id = f.mpa_id\n" +
+                "  group by     f.id,\n" +
+                "               f.name, \n" +
+                "               f.description, \n" +
+                "               f.release_date,\n" +
+                "               f.duration, \n" +
+                "               f.mpa_id,\n" +
+                "               m.mpa_name\n" +
+                ") ff left join films_likes fl on ff.id = fl.film_id\n" +
+                "group by ff.id, \n" +
+                "     ff.name, \n" +
+                "     ff.description, \n" +
+                "     ff.release_date, \n" +
+                "     ff.duration,\n" +
+                "     ff.genres, \n" +
+                "     ff.mpa_id,\n" +
+                "     ff.mpa_name\n" +
+                "order by cnt_likes desc\n" +
+                "limit ? ";
 
         List<Film> films = jdbcTemplate.query(sqlQuery, (rs, rowNum) -> getFilmMapper(rs), countTop);
 
