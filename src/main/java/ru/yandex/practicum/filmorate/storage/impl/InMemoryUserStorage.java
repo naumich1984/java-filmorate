@@ -108,7 +108,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User deleteFriend(Long userId, Long friendId) {
-       Optional<Set<Long>> friendsListO = Optional.ofNullable(usersRate.get(userId));
+        Optional<Set<Long>> friendsListO = Optional.ofNullable(usersRate.get(userId));
         if (!friendsListO.isPresent()) {
             throw new NoUserLikesFoundException("User " + userId + " did not have any friends");
         } else {
@@ -150,5 +150,10 @@ public class InMemoryUserStorage implements UserStorage {
         }
 
         return userO.get();
+    }
+
+    @Override
+    public Integer deleteUser(Long userId) {
+        return null;
     }
 }

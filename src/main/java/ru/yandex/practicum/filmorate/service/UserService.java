@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Data
 public class UserService {
 
     @Qualifier("userDbStorage")
@@ -32,13 +34,13 @@ public class UserService {
     public User deleteFriend(Long userId, Long friendId) {
         log.debug("filmId {}, userId {}", userId, friendId);
         return userStorage.deleteFriend(userId, friendId);
-     }
+    }
 
     public User getUser(Long userId) {
         log.debug("userId {}", userId);
         try {
             User user = userStorage.getUser(userId);
-            if (user == null)  throw new NoUserFoundException("User not found!");
+            if (user == null) throw new NoUserFoundException("User not found!");
             return user;
         } catch (NoSuchElementException e) {
             throw new NoUserFoundException(e.getMessage());
@@ -49,7 +51,6 @@ public class UserService {
         log.debug("UserId {}", userId);
         try {
             List<User> userFriends = userStorage.getUserFriends(userId);
-
             return userFriends;
         } catch (NoSuchElementException e) {
             throw new NoUserFoundException(e.getMessage());
@@ -69,4 +70,24 @@ public class UserService {
             return Collections.EMPTY_LIST;
         }
     }
+
+    public String deleteUser(Long userId) {
+        int result = userStorage.deleteUser(userId);
+        switch (result) {
+            case 0: {
+                log.debug("There is no user with id={}", userId);
+                return "User with id = " + userId + " is not exist.";
+            }
+            case 1: {
+                log.debug("User with id={} has been deleted successfully.", userId);
+                return "User with id = " + userId + " has been deleted successfully\".";
+            }
+            default: {
+                log.error("DELETED MORE THAN ONE USER!!!");
+                throw new NoUserFoundException("Something went wrong!");
+            }
+        }
+    }
+
+
 }

@@ -47,8 +47,8 @@ class FilmorateApplicationTest {
         validator = factory.getValidator();
         UserStorage userStorage = new InMemoryUserStorage();
         FilmStorage filmStorage = new InMemoryFilmStorage();
-        userController = new UserController(userStorage, new UserService(userStorage));
-        filmController = new FilmController(filmStorage, new FilmService(filmStorage));
+        userController = new UserController( new UserService(userStorage));
+        filmController = new FilmController( new FilmService(filmStorage));
         user = User.builder()
                 .id(null)
                 .email("email@email.ru")

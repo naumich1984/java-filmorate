@@ -70,7 +70,7 @@ public class FilmDbStorage implements FilmStorage {
         if (rs.getString("genres") != null) {
             genresList = Arrays.stream(Optional.ofNullable(rs.getString("genres")).orElse("").split(","))
                     .map(f -> getAllGenres().stream().filter(g -> g.getId().equals(Integer.parseInt(f)))
-                    .findFirst().get())
+                            .findFirst().get())
                     .collect(Collectors.toList());
         } else {
             genresList = Collections.emptyList();
@@ -357,5 +357,11 @@ public class FilmDbStorage implements FilmStorage {
         List<Film> films = jdbcTemplate.query(sqlQuery, (rs, rowNum) -> getFilmMapper(rs), countTop);
 
         return films;
+    }
+
+    @Override
+    public Integer deleteFilm(Long filmId) {
+        String sql = "DELETE FROM films WHERE id=?;";
+        return jdbcTemplate.update(sql, filmId);
     }
 }

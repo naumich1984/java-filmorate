@@ -15,12 +15,10 @@ import javax.validation.constraints.NotNull;
 @Slf4j
 public class FilmController {
 
-    private final FilmStorage filmStorage;
     private final FilmService filmService;
 
     @Autowired
-    public FilmController(FilmStorage filmStorage, FilmService filmService) {
-        this.filmStorage = filmStorage;
+    public FilmController(FilmService filmService) {
         this.filmService = filmService;
     }
 
@@ -29,7 +27,7 @@ public class FilmController {
     public ResponseEntity getAllGenres() {
         log.debug("GET /genres request");
 
-        return ResponseEntity.ok(filmStorage.getAllGenres());
+        return ResponseEntity.ok(filmService.getFilmStorage().getAllGenres());
     }
 
 
@@ -44,7 +42,7 @@ public class FilmController {
     public ResponseEntity getAllMpa() {
         log.debug("GET /mpa request");
 
-        return ResponseEntity.ok(filmStorage.getAllMpa());
+        return ResponseEntity.ok(filmService.getFilmStorage().getAllMpa());
     }
 
 
@@ -60,21 +58,21 @@ public class FilmController {
     public ResponseEntity getAllFilms() {
         log.debug("GET /films request");
 
-        return ResponseEntity.ok(filmStorage.getAllFilms());
+        return ResponseEntity.ok(filmService.getFilmStorage().getAllFilms());
     }
 
     @PostMapping("/films")
     public ResponseEntity addFilm(@RequestBody @Valid @NotNull Film film) {
         log.debug("POST /users request");
 
-        return ResponseEntity.ok(filmStorage.addFilm(film));
+        return ResponseEntity.ok(filmService.getFilmStorage().addFilm(film));
     }
 
     @PutMapping("/films")
     public ResponseEntity updateFilm(@RequestBody @Valid @NotNull Film film) {
         log.debug("PUT /films request");
 
-        return ResponseEntity.ok(filmStorage.updateFilm(film));
+        return ResponseEntity.ok(filmService.getFilmStorage().updateFilm(film));
     }
 
     @PutMapping("/films/{id}/like/{userId}")
@@ -103,6 +101,13 @@ public class FilmController {
         log.debug("GET /films/{id} request");
 
         return ResponseEntity.ok(filmService.getFilm(id));
+    }
+
+    @DeleteMapping("/films/{filmId}")
+    public ResponseEntity deleteFilm(@PathVariable Long filmId) {
+        log.debug("DELETE /films/{id} request");
+
+        return ResponseEntity.ok(filmService.deleteFilm(filmId));
     }
 
 }
