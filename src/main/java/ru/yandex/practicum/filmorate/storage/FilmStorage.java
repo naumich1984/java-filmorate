@@ -25,4 +25,6 @@ public interface FilmStorage {
     List<Film> getTopNfilms(Integer count);
 
     Film deleteLikeFromFilm(Long filmId, Long userId);
+
+    Integer deleteFilm(Long filmId);
 }

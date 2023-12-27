@@ -15,12 +15,12 @@ import javax.validation.constraints.NotNull;
 @Slf4j
 public class UserController {
 
-    private final UserStorage userStorage;
+    //  private final UserStorage userStorage; нам не нужны стораджи в контроллерах сервис и так работает со сторадж
     private final UserService userService;
 
     @Autowired
-    public UserController(UserStorage userStorage, UserService userService) {
-        this.userStorage = userStorage;
+    public UserController(UserService userService) {
+
         this.userService = userService;
     }
 
@@ -28,21 +28,21 @@ public class UserController {
     public ResponseEntity getAllUsers() {
         log.debug("GET /users request");
 
-        return ResponseEntity.ok(userStorage.getAllUsers());
+        return ResponseEntity.ok(userService.getUserStorage().getAllUsers());
     }
 
     @PostMapping("/users")
     public ResponseEntity addUser(@RequestBody @Valid @NotNull User user) {
         log.debug("POST /users request");
 
-        return ResponseEntity.ok(userStorage.addUser(user));
+        return ResponseEntity.ok(userService.getUserStorage().addUser(user));
     }
 
     @PutMapping("/users")
     public ResponseEntity updateUser(@RequestBody @Valid @NotNull User user) {
         log.debug("PUT /users request");
 
-        return ResponseEntity.ok(userStorage.updateUser(user));
+        return ResponseEntity.ok(userService.getUserStorage().updateUser(user));
     }
 
     @PutMapping("/users/{id}/friends/{friendId}")
@@ -78,5 +78,12 @@ public class UserController {
         log.debug("GET /users/{id}/friends/common/{otherId} request");
 
         return ResponseEntity.ok(userService.findCommonFriends(id, otherId));
+    }
+
+    @DeleteMapping("/users/{userId}")
+    public ResponseEntity deleteUser(@PathVariable Long userId) {
+        log.debug("DELETE /users/{userId}");
+
+        return ResponseEntity.ok(userService.deleteUser(userId));
     }
 }
