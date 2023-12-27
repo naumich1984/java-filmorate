@@ -12,9 +12,9 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.storage.impl.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storage.impl.InMemoryUserStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -47,8 +47,8 @@ class FilmorateApplicationTest {
         validator = factory.getValidator();
         UserStorage userStorage = new InMemoryUserStorage();
         FilmStorage filmStorage = new InMemoryFilmStorage();
-        userController = new UserController( new UserService(userStorage));
-        filmController = new FilmController( new FilmService(filmStorage));
+        userController = new UserController(new UserService(userStorage));
+        filmController = new FilmController(new FilmService(filmStorage));
         user = User.builder()
                 .id(null)
                 .email("email@email.ru")
