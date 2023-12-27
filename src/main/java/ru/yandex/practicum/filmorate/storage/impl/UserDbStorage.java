@@ -99,6 +99,8 @@ public class UserDbStorage implements UserStorage {
     @Override
     public List<User> getUserFriends(Long userId) {
         log.debug("getUserFriends, userId {}", userId);
+        //проверка на то существует ли пользователь(тесты требуют)
+        existsUser(userId, "пользователь не существует", 0);
         String sql = "select uf.id, uf.email, uf.login, uf.name, uf.birthday from users uf where uf.id IN ( \n" +
                 "SELECT f.FRIEND_ID\n" +
                 "FROM users u INNER JOIN friends f ON u.ID = f.USER_ID\n" +
@@ -205,4 +207,12 @@ public class UserDbStorage implements UserStorage {
 
         return userO.get();
     }
+
+    @Override
+    public Integer deleteUser(Long userId) {
+        String sql = "DELETE FROM USERS WHERE id=?;";
+        return jdbcTemplate.update(sql, userId);
+    }
+
+
 }

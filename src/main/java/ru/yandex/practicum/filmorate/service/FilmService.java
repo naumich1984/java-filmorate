@@ -1,9 +1,11 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.NoFilmFoundException;
 import ru.yandex.practicum.filmorate.exception.NoGenreFoundException;
 import ru.yandex.practicum.filmorate.exception.NoUserFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -17,6 +19,7 @@ import java.util.Optional;
 
 @Service
 @Slf4j
+@Data
 public class FilmService {
 
     @Qualifier("filmDbStorage")
@@ -74,10 +77,28 @@ public class FilmService {
         log.debug("filmId {}", filmId);
         try {
             Film film = filmStorage.getFilm(filmId);
-            if (film == null)  throw new NoUserFoundException("Film not found!");
+            if (film == null) throw new NoUserFoundException("Film not found!");
             return film;
         } catch (NoSuchElementException e) {
             throw new NoUserFoundException(e.getMessage());
+        }
+    }
+
+    public String deleteFilm(Long filmId) {
+        int result = filmStorage.deleteFilm(filmId);
+        switch (result) {
+            case 0: {
+                log.debug("There is no film with id={}", filmId);
+                return "Film with id = " + filmId + " is not exist.";
+            }
+            case 1: {
+                log.debug("Film with id={} has been deleted successfully.", filmId);
+                return "Film with id = " + filmId + " has been deleted successfully\".";
+            }
+            default: {
+                log.error("DELETED MORE THAN ONE FILM");
+                throw new NoFilmFoundException("Something went wrong!");
+            }
         }
     }
 }

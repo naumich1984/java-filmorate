@@ -161,4 +161,9 @@ public class InMemoryFilmStorage implements FilmStorage {
             throw new ValidationException("adding film is null!");
         }
     }
+
+    @Override
+    public Integer deleteFilm(Long filmId) {
+        return null;
+    }
 }
