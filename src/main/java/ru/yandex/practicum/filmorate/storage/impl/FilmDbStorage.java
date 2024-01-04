@@ -4,12 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.NoDirectorFoundException;
 import ru.yandex.practicum.filmorate.exception.NoFilmFoundException;
 import ru.yandex.practicum.filmorate.exception.NoUserFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -80,7 +84,7 @@ public class FilmDbStorage implements FilmStorage {
 
         return new Film(rs.getLong("id"), rs.getString("name"),
                 rs.getString("description"), LocalDate.parse(rs.getString("release_date")),
-                rs.getInt("duration"), genresList, new Mpa(rs.getInt("mpa_id"),
+                rs.getInt("duration"), genresList, getDirectorsByFilmId(rs.getLong("id")), new Mpa(rs.getInt("mpa_id"),
                 rs.getString("mpa_name")));
     }
 
@@ -363,5 +367,158 @@ public class FilmDbStorage implements FilmStorage {
     public Integer deleteFilm(Long filmId) {
         String sql = "DELETE FROM films WHERE id=?;";
         return jdbcTemplate.update(sql, filmId);
+    }
+
+    @Override
+    public List<Director> getAllDirectors() {
+        log.debug("getAllDirectors");
+        String sql = "select * from directors";
+        List<Director> directors = jdbcTemplate.query(sql, getDirectorMapper());
+        if (directors.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return directors;
+    }
+    @Override
+    public Director getDirector(Integer id) {
+        log.debug("getDirector");
+        try {
+            String sql = "select * from directors where id=?;";
+            Director director = jdbcTemplate.queryForObject(sql, getDirectorMapper(), id);
+            log.info("");
+            return director;
+        } catch (RuntimeException e) {
+            log.warn("Not found director with id = {}", id);
+            throw new NoDirectorFoundException("Not found director with id = " + id);
+        }
+    }
+
+    public List<Director> getDirectorsByFilmId(Long filmId) {
+        log.debug("getDirectorsByFilmId");
+        if (getFilm(filmId) == null) {
+            log.warn("Not found film with id = {}", filmId);
+            throw new NoFilmFoundException("Not found film with id = " + filmId);
+        }
+
+        String sql = "SELECT "
+            + "d.id, "
+            + "d.name "
+            + "from directors d"
+            + "join directors_films df on d.id = df.director_id"
+            + "where df.film_id = ?;";
+
+        List<Director> directors = jdbcTemplate.query(sql, getDirectorMapper());
+        if (directors.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return directors;
+    }
+
+    @Override
+    public List<Film> getDirectorsFilmSortBy(Integer directorId, String sort) {
+        log.debug("getDirectorsFilmLikeOrder");
+        if (!sort.equals("year") && !sort.equals("likes")) {
+            throw new NoDirectorFoundException("Bad sort request");
+        }
+
+        if (getDirector(directorId) == null) {
+            log.warn("Not found director with id = {}", directorId);
+            throw new NoDirectorFoundException("Not found director with id = " + directorId);
+        }
+
+        String sqlByLikes = "SELECT "
+            + "f.id "
+            + "FROM films f "
+            + "JOIN likes l ON f.id = l.film_id "
+            + "JOIN directors_films df ON f.id = df.film_id "
+            + "JOIN directors d ON d.id = df.director_id "
+            + "WHERE d.id = ? "
+            + "GROUP BY f.id "
+            + "ORDER BY COUNT(l.film_id) DESC";
+
+        String sqlByYear = "SELECT "
+            + "f.id "
+            + "FROM films f "
+            + "JOIN directors_films df ON f.id = df.film_id "
+            + "JOIN directors d ON d.id = df.director_id "
+            + "WHERE d.id = ? "
+            + "GROUP BY f.id "
+            + "ORDER BY date_part('year', f.release_date);";
+
+        List<Long> filmsId;
+
+        switch (sort) {
+            case "likes":
+                filmsId = jdbcTemplate.query(sqlByLikes, filmIdMapper(), directorId);
+            case "year":
+                filmsId = jdbcTemplate.query(sqlByYear, filmIdMapper(), directorId);
+            default:
+                filmsId = new ArrayList<>();
+        }
+
+        List<Film> films = new ArrayList<>();
+
+        for (Long filmId : filmsId) {
+            films.add(getFilm(filmId));
+        }
+        return films;
+    }
+
+    @Override
+    public Director createDirector(Director director) {
+        log.debug("createDirector");
+        SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate)
+            .withTableName("directors")
+            .usingGeneratedKeyColumns("id");
+
+        int id = insert.executeAndReturnKey(directorToMap(director)).intValue();
+        director.setId(id);
+        return director;
+    }
+
+    @Override
+    public Director updateDirector(Director director) {
+        log.debug("updateDirector");
+        if (getDirector(director.getId()) == null) {
+            log.warn("Not found director with id = {}", director.getId());
+            throw new NoDirectorFoundException("Not found director with id = " + director.getId());
+        }
+
+        String sql = "UPDATE directors SET "
+            + "name = ? "
+            + "WHERE id = ?;";
+
+        jdbcTemplate.update(sql, director.getName());
+
+        log.info("Updated director with id = {}", director.getId());
+        return getDirector(director.getId());
+    }
+
+    @Override
+    public Integer deleteDirector(Integer id) {
+        log.debug("deleteDirector");
+        String sql = "DELETE FROM directors WHERE id=?;";
+        return jdbcTemplate.update(sql, id);
+    }
+
+    private static RowMapper<Director> getDirectorMapper() {
+        log.debug("getDirectorMapper");
+        return ((rs, rowNum) -> Director.builder()
+            .id(rs.getInt("id"))
+            .name(rs.getString("name"))
+            .build());
+    }
+
+    private static Map<String, Object> directorToMap(Director director) {
+        return Map.of(
+            "name", director.getName()
+        );
+    }
+
+    private static RowMapper<Long> filmIdMapper() {
+        log.debug("filmIdMapper");
+        return ((rs, rowNum) -> rs.getLong("id"));
     }
 }

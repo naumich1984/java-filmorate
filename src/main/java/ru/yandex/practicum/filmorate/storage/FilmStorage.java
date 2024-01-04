@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -27,4 +28,16 @@ public interface FilmStorage {
     Film deleteLikeFromFilm(Long filmId, Long userId);
 
     Integer deleteFilm(Long filmId);
+
+    List<Director> getAllDirectors();
+
+    Director getDirector(Integer id);
+
+    Director createDirector(Director director);
+
+    Director updateDirector(Director director);
+
+    Integer deleteDirector(Integer id);
+
+    List<Film> getDirectorsFilmSortBy(Integer directorId, String sort);
 }
