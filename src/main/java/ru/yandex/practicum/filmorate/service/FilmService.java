@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NoFilmFoundException;
 import ru.yandex.practicum.filmorate.exception.NoGenreFoundException;
 import ru.yandex.practicum.filmorate.exception.NoUserFoundException;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -100,5 +101,41 @@ public class FilmService {
                 throw new NoFilmFoundException("Something went wrong!");
             }
         }
+    }
+
+    public List<Director> getAllDirectors() {
+        log.debug("getAllDirectors");
+
+        return filmStorage.getAllDirectors();
+    }
+
+    public Director getDirector(Integer id) {
+        log.debug("getDirector");
+
+        return filmStorage.getDirector(id);
+    }
+
+    public Director createDirector(Director director) {
+        log.debug("createDirector");
+
+        return filmStorage.createDirector(director);
+    }
+
+    public Director updateDirector(Director director) {
+        log.debug("updateDirector");
+
+        return filmStorage.updateDirector(director);
+    }
+
+    public Integer deleteDirector(Integer id) {
+        log.debug("deleteDirector");
+
+        return filmStorage.deleteDirector(id);
+    }
+
+    public List<Film> getDirectorsFilmSortBy(Integer directorId, String sort) {
+        log.debug("getDirectorsFilmLikeOrder");
+
+        return filmStorage.getDirectorsFilmSortBy(directorId, sort);
     }
 }

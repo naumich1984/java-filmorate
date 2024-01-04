@@ -25,5 +25,6 @@ public class Film {
     @Positive(message = "duration should be positive")
     private Integer duration;
     private List<Genre> genres;
+    private List<Director> director;
     private Mpa mpa;
 }
