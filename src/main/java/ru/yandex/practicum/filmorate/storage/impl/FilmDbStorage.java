@@ -380,6 +380,7 @@ public class FilmDbStorage implements FilmStorage {
 
         return directors;
     }
+
     @Override
     public Director getDirector(Integer id) {
         log.debug("getDirector");
