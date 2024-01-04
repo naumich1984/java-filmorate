@@ -37,9 +37,9 @@ class FilmDbStorageTest {
         firstGenre = new Genre(1,"Комедия");
         firstMpa = new Mpa(1,"G");
         newFilm = new Film(1L, "film", "description", LocalDate.of(1991, 1, 1),
-                120, Collections.emptyList(), new Mpa(1,"G"));
+                120, Collections.emptyList(), Collections.emptyList(), new Mpa(1,"G"));
         newFilm2 = new Film(2L, "film2", "description2", LocalDate.of(1992, 2, 2),
-                122, Collections.emptyList(), new Mpa(1,"G"));
+                122, Collections.emptyList(), Collections.emptyList(), new Mpa(1,"G"));
         newUser = new User(1L, "user@email.ru", "vanya123", "Ivan Petrov", LocalDate.of(1990, 1, 1));
         filmStorage = new FilmDbStorage(jdbcTemplate);
         userStorage = new UserDbStorage(jdbcTemplate);
