@@ -85,4 +85,13 @@ public class ErrorHandler {
         return Map.of("Ошибка поиска Mpa", e.getMessage());
     }
 
+    @ExceptionHandler
+    @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Review not found")
+    public Map<String, String> handleNoReviewFoundException(final NoReviewFoundException e) {
+        log.debug("Ошибка поиска review:{}", e.getMessage());
+        log.debug("stacktrace ошибки:{}", e.getStackTrace());
+
+        return Map.of("Ошибка поиска review", e.getMessage());
+    }
+
 }
