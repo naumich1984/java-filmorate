@@ -145,11 +145,12 @@ public class FilmController {
         return ResponseEntity.ok(filmService.deleteDirector(id));
     }
 
-    @GetMapping("/films/director/{directorId}?sortBy={sort}")
-    public ResponseEntity getDirectosFilmSortBy(@PathVariable Integer directorId, @PathVariable String sort) {
+    @GetMapping("/films/director/{directorId}")
+    public ResponseEntity getDirectorsFilmSortBy(@PathVariable Integer directorId,
+                                        @RequestParam(value = "sortBy", required = false) String sortBy) {
         log.debug("GET /films/director/{directorId}?sortBy");
 
-        return ResponseEntity.ok(filmService.getDirectorsFilmSortBy(directorId, sort));
+        return ResponseEntity.ok(filmService.getDirectorsFilmSortBy(directorId, sortBy));
     }
 
 }
