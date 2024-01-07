@@ -38,7 +38,7 @@ public class ReviewDbStorageTest {
     @BeforeEach
     public void setup() {
         newFilm = new Film(1L, "film", "description", LocalDate.of(1991, 1, 1),
-                120, Collections.emptyList(), new Mpa(1,"G"));
+                120, Collections.emptyList(), Collections.emptyList(), new Mpa(1,"G"));
         newUser = new User(1L, "user@email.ru", "vanya123", "Ivan Petrov", LocalDate.of(1990, 1, 1));
         newReview = new Review(1L,"review content", true, 1L, 1L, 0L);
         filmStorage = new FilmDbStorage(jdbcTemplate);
