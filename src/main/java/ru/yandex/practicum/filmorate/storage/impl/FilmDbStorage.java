@@ -480,41 +480,68 @@ public class FilmDbStorage implements FilmStorage {
         }
 
         String sqlByLikes = "SELECT "
-            + "f.id "
+            + "f.id, "
+            + "f.name, "
+            + "f.description, "
+            + "f.release_date, "
+            + "f.duration, "
+            + "string_agg(gf.genre_id::text, ',') as genres, "
+            + "string_agg(df.director_id::text, ',') as directors, "
+            + "f.mpa_id, "
+            + "m.mpa_name "
             + "FROM films f "
+            + "LEFT JOIN genres_films gf ON f.id = gf.film_id "
             + "LEFT JOIN films_likes l ON f.id = l.film_id "
             + "JOIN directors_films df ON f.id = df.film_id "
+            + "INNER JOIN mpa m ON m.id = f.mpa_id "
             + "WHERE df.director_id = ? "
-            + "GROUP BY f.id "
+            + "GROUP BY f.id, "
+            + "f.name, "
+            + "f.description, "
+            + "f.release_date, "
+            + "f.duration, "
+            + "f.mpa_id, "
+            + "m.mpa_name "
             + "ORDER BY count(l.film_id) DESC;";
 
         String sqlByYear = "SELECT "
-            + "f.id "
+            + "f.id, "
+            + "f.name, "
+            + "f.description, "
+            + "f.release_date, "
+            + "f.duration, "
+            + "string_agg(gf.genre_id::text, ',') as genres, "
+            + "string_agg(df.director_id::text, ',') as directors, "
+            + "f.mpa_id, "
+            + "m.mpa_name "
             + "FROM films f "
+            + "LEFT JOIN genres_films gf ON f.id = gf.film_id "
             + "JOIN directors_films df ON f.id = df.film_id "
             + "JOIN directors d ON d.director_id = df.director_id "
+            + "INNER JOIN mpa m ON m.id = f.mpa_id "
             + "WHERE d.director_id = ? "
-            + "GROUP BY f.id "
+            + "GROUP BY f.id, "
+            + "f.name, "
+            + "f.description, "
+            + "f.release_date, "
+            + "f.duration, "
+            + "f.mpa_id, "
+            + "m.mpa_name "
             + "ORDER BY EXTRACT(YEAR FROM f.release_date);";
 
-        List<Long> filmsId;
+        List<Film> films;
 
         switch (sort) {
             case "likes":
-                filmsId = jdbcTemplate.query(sqlByLikes, filmIdMapper(), directorId);
+                films = jdbcTemplate.query(sqlByLikes, (rs, rowNum) -> getFilmMapper(rs), directorId);
                 break;
             case "year":
-                filmsId = jdbcTemplate.query(sqlByYear, filmIdMapper(), directorId);
+                films = jdbcTemplate.query(sqlByYear, (rs, rowNum) -> getFilmMapper(rs), directorId);
                 break;
             default:
-                filmsId = new ArrayList<>();
+                films = new ArrayList<>();
         }
 
-        List<Film> films = new ArrayList<>();
-
-        for (Long filmId : filmsId) {
-            films.add(getFilm(filmId));
-        }
         return films;
     }
 
