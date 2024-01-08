@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
@@ -62,7 +63,7 @@ public class FilmController {
 
     @PostMapping("/films")
     public ResponseEntity addFilm(@RequestBody @Valid @NotNull Film film) {
-        log.debug("POST /users request");
+        log.debug("POST /films request");
 
         return ResponseEntity.ok(filmService.getFilmStorage().addFilm(film));
     }
@@ -107,6 +108,49 @@ public class FilmController {
         log.debug("DELETE /films/{id} request");
 
         return ResponseEntity.ok(filmService.deleteFilm(filmId));
+    }
+
+    @GetMapping("/directors")
+    public ResponseEntity getAllDirectors() {
+        log.debug("GET /directors request");
+
+        return ResponseEntity.ok(filmService.getFilmStorage().getAllDirectors());
+    }
+
+    @GetMapping("/directors/{id}")
+    public ResponseEntity getDirector(@PathVariable Integer id) {
+        log.debug("GET /directors/{id} request");
+
+        return ResponseEntity.ok(filmService.getDirector(id));
+    }
+
+    @PostMapping("/directors")
+    public ResponseEntity createDirector(@RequestBody Director director) {
+        log.debug("POST /directors request");
+
+        return ResponseEntity.ok(filmService.createDirector(director));
+    }
+
+    @PutMapping("/directors")
+    public ResponseEntity updateDirector(@RequestBody Director director) {
+        log.debug("PUT /directors request");
+
+        return ResponseEntity.ok(filmService.updateDirector(director));
+    }
+
+    @DeleteMapping("/directors/{id}")
+    public ResponseEntity deleteDirector(@PathVariable Integer id) {
+        log.debug("DELETE /directors/{id}");
+
+        return ResponseEntity.ok(filmService.deleteDirector(id));
+    }
+
+    @GetMapping("/films/director/{directorId}")
+    public ResponseEntity getDirectorsFilmSortBy(@PathVariable Integer directorId,
+                                        @RequestParam(value = "sortBy", required = false) String sortBy) {
+        log.debug("GET /films/director/{directorId}?sortBy");
+
+        return ResponseEntity.ok(filmService.getDirectorsFilmSortBy(directorId, sortBy));
     }
 
 }
