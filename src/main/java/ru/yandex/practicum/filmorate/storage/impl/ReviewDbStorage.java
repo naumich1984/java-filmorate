@@ -100,6 +100,7 @@ public class ReviewDbStorage implements ReviewStorage {
     public Integer deleteReview(long id) {
         log.debug("deleteReview");
         String sql = "DELETE FROM reviews WHERE id=?;";
+
         return jdbcTemplate.update(sql, id);
     }
 

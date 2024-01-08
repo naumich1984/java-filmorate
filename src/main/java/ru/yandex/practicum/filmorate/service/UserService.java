@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NoUserFoundException;
+import ru.yandex.practicum.filmorate.model.FeedEventType;
+import ru.yandex.practicum.filmorate.model.FeedOperations;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.*;
@@ -19,21 +22,34 @@ public class UserService {
 
     @Qualifier("userDbStorage")
     private final UserStorage userStorage;
+    private final FeedStorage feedStorage;
 
     @Autowired
-    public UserService(UserStorage userStorage) {
+    public UserService(UserStorage userStorage, FeedStorage feedStorage) {
         this.userStorage = userStorage;
+        this.feedStorage = feedStorage;
     }
 
     public User addFriend(Long userId, Long friendId) {
         log.debug("userId {}, friendId {}", userId, friendId);
-        log.debug("Get list likes");
-        return userStorage.addFriend(userId, friendId);
+        log.debug("addFriend");
+        User userResult = userStorage.addFriend(userId, friendId);
+        if(Optional.ofNullable(userResult).isPresent()) {
+            feedStorage.addFeedEntity(userId, FeedEventType.FRIEND, FeedOperations.ADD, friendId);
+        }
+
+        return userResult;
     }
 
     public User deleteFriend(Long userId, Long friendId) {
         log.debug("filmId {}, userId {}", userId, friendId);
-        return userStorage.deleteFriend(userId, friendId);
+        log.debug("deleteFriend");
+        User userResult = userStorage.deleteFriend(userId, friendId);
+        if(Optional.ofNullable(userResult).isPresent()) {
+            feedStorage.addFeedEntity(userId, FeedEventType.FRIEND, FeedOperations.REMOVE, friendId);
+        }
+
+        return userResult;
     }
 
     public User getUser(Long userId) {
@@ -88,6 +104,4 @@ public class UserService {
             }
         }
     }
-
-
 }
