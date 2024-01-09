@@ -35,12 +35,11 @@ public class FeedDbStorage implements FeedStorage {
                 "    f.entity_id " +
                 "    from feeds f inner join event_types et on et.id = f.event_type_id " +
                 "    inner join operations o on o.id = f.operation_id " +
-                "    inner join ( select u.id user_id from users u where u.id = ? " +
-                "               union all " +
-                "               select fr.friend_id user_id  from friends fr where fr.user_id = ? " +
-                "                   and fr.friendship_id = 1) uf on uf.user_id = f.user_id " +
+                "    inner join users u " +
+                "    on u.id = f.user_id " +
+                "    where u.id = ? " +
                 "    order by f.id ";
-        List<Feed> feeds = jdbcTemplate.query(sql, (rs, rowNum) -> getFeedMapper(rs), userId, userId);
+        List<Feed> feeds = jdbcTemplate.query(sql, (rs, rowNum) -> getFeedMapper(rs), userId);
         if (feeds.isEmpty()) {
             return Collections.emptyList();
         }

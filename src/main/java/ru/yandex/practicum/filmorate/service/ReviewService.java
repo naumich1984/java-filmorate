@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.model.FeedOperations;
 import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.storage.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.ReviewStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 @Service
 @Slf4j
@@ -20,7 +19,7 @@ public class ReviewService {
     private final FeedStorage feedStorage;
 
     @Autowired
-    public ReviewService(ReviewStorage reviewStorage, FeedStorage feedStorage, UserStorage userStorage) {
+    public ReviewService(ReviewStorage reviewStorage, FeedStorage feedStorage) {
         this.reviewStorage = reviewStorage;
         this.feedStorage = feedStorage;
     }
@@ -42,22 +41,18 @@ public class ReviewService {
     public Integer deleteReview(long reviewId) {
         Review deletedReview = reviewStorage.getReview(reviewId);
         Integer reviewResult = reviewStorage.deleteReview(reviewId);
-        feedStorage.addFeedEntity(deletedReview.getUserId(), FeedEventType.REVIEW, FeedOperations.REMOVE, reviewId);
+        if (reviewResult > 0) {
+            feedStorage.addFeedEntity(deletedReview.getUserId(), FeedEventType.REVIEW, FeedOperations.REMOVE, reviewId);
+        }
 
         return reviewResult;
     }
 
     public Review addLikeReview(long id, long userId) {
-        Review reviewResult = reviewStorage.addLikeReview(id, userId);
-        feedStorage.addFeedEntity(userId, FeedEventType.LIKE, FeedOperations.ADD, id);
-
-        return reviewResult;
+        return reviewStorage.addLikeReview(id, userId);
     }
 
     public Review deleteLikeReview(long id, long userId) {
-        Review reviewResult = reviewStorage.deleteLikeReview(id, userId);
-        feedStorage.addFeedEntity(userId, FeedEventType.LIKE, FeedOperations.REMOVE, id);
-
-        return reviewResult;
+        return reviewStorage.deleteLikeReview(id, userId);
     }
 }
