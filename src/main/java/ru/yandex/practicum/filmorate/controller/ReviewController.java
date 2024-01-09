@@ -25,21 +25,21 @@ public class ReviewController {
     public ResponseEntity addReview(@RequestBody @Valid @NotNull Review review) {
         log.debug("POST /reviews request");
 
-        return ResponseEntity.ok(reviewService.getReviewStorage().addReview(review));
+        return ResponseEntity.ok(reviewService.addReview(review));
     }
 
     @PutMapping("/reviews")
     public ResponseEntity updateReview(@RequestBody @Valid @NotNull Review review) {
         log.debug("PUT /reviews request");
 
-        return ResponseEntity.ok(reviewService.getReviewStorage().updateReview(review));
+        return ResponseEntity.ok(reviewService.updateReview(review));
     }
 
     @DeleteMapping("/reviews/{id}")
     public ResponseEntity deleteReview(@PathVariable Long id) {
         log.debug("DELETE /reviews/{id} request");
 
-        return ResponseEntity.ok(reviewService.getReviewStorage().deleteReview(id));
+        return ResponseEntity.ok(reviewService.deleteReview(id));
     }
 
     @GetMapping("/reviews/{id}")
@@ -61,7 +61,7 @@ public class ReviewController {
     public ResponseEntity addLikeToReview(@PathVariable long id, @PathVariable long userId) {
         log.debug("PUT /reviews/{id}/like/{userId}");
 
-        return ResponseEntity.ok(reviewService.getReviewStorage().addLikeReview(id, userId));
+        return ResponseEntity.ok(reviewService.addLikeReview(id, userId));
     }
 
     @PutMapping("/reviews/{id}/dislike/{userId}")
@@ -75,7 +75,7 @@ public class ReviewController {
     public ResponseEntity deleteLikeToReview(@PathVariable long id, @PathVariable long userId) {
         log.debug("DELETE /reviews/{id}/like/{userId}");
 
-        return ResponseEntity.ok(reviewService.getReviewStorage().deleteLikeReview(id, userId));
+        return ResponseEntity.ok(reviewService.deleteLikeReview(id, userId));
     }
 
     @DeleteMapping("/reviews/{id}/dislike/{userId}")

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NoFilmFoundException;
 import ru.yandex.practicum.filmorate.exception.NoGenreFoundException;
 import ru.yandex.practicum.filmorate.exception.NoUserFoundException;
+import ru.yandex.practicum.filmorate.model.*;
+import ru.yandex.practicum.filmorate.storage.FeedStorage;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
@@ -25,11 +27,13 @@ public class FilmService {
 
     @Qualifier("filmDbStorage")
     private final FilmStorage filmStorage;
+    private final FeedStorage feedStorage;
     private final int countTopFilm = 10;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage) {
+    public FilmService(FilmStorage filmStorage, FeedStorage feedStorage) {
         this.filmStorage = filmStorage;
+        this.feedStorage = feedStorage;
     }
 
     public Genre getGenre(Integer genreId) {
@@ -56,15 +60,26 @@ public class FilmService {
 
     public Film addLikeToFilm(Long filmId, Long userId) {
         log.debug("filmId {}, userId {}", filmId, userId);
-        log.debug("Get list likes");
+        log.debug("addLikeToFilm");
+        Film filmResult = filmStorage.addLikeToFilm(filmId, userId);
+        //Делаем запись в истории для ленты событий
+        if (Optional.ofNullable(filmResult).isPresent()) {
+            feedStorage.addFeedEntity(userId, FeedEventType.LIKE, FeedOperations.ADD, filmId);
+        }
 
-        return filmStorage.addLikeToFilm(filmId, userId);
+        return filmResult;
     }
 
     public Film deleteLikeFromFilm(Long filmId, Long userId) {
         log.debug("filmId {}, userId {}", filmId, userId);
+        log.debug("deleteLikeFromFilm");
+        Film filmResult = filmStorage.deleteLikeFromFilm(filmId, userId);
+        //Делаем запись в истории для ленты событий
+        if (Optional.ofNullable(filmResult).isPresent()) {
+            feedStorage.addFeedEntity(userId, FeedEventType.LIKE, FeedOperations.REMOVE, filmId);
+        }
 
-        return filmStorage.deleteLikeFromFilm(filmId, userId);
+        return filmResult;
     }
 
     public List<Film> getTopNfilms(Integer count) {
