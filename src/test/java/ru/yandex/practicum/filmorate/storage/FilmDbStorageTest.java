@@ -256,4 +256,16 @@ class FilmDbStorageTest {
         assertThat(2)
             .isEqualTo(filmStorage.getDirectorsFilmSortBy(1, "likes").size());
     }
+
+    @Test
+    public void testGetFilmByQuery() {
+        filmStorage.addFilm(newFilm);
+        userStorage.addUser(newUser);
+        filmStorage.addLikeToFilm(newFilm.getId(), newUser.getId());
+
+        List<Film> films = filmStorage.getFilmByQuery("fil","title,director");
+
+        assertThat("film")
+                .isEqualTo(films.get(0).getName());
+    }
 }
