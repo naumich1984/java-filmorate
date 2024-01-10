@@ -154,8 +154,8 @@ public class FilmController {
     }
 
     @GetMapping("films/search")
-    public ResponseEntity getFilmByQuery(@RequestParam(value = "query", defaultValue="empty") String query,
-                                         @RequestParam(value = "by", defaultValue="empty") String by) {
+    public ResponseEntity getFilmByQuery(@RequestParam(value = "query", defaultValue = "empty") String query,
+                                         @RequestParam(value = "by", defaultValue = "empty") String by) {
         log.debug("GET /films/search?query={query}&by={List.of(director,title)}");
 
         return ResponseEntity.ok(filmService.getFilmStorage().getFilmByQuery(query, by));
