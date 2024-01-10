@@ -40,4 +40,6 @@ public interface FilmStorage {
     Integer deleteDirector(Integer id);
 
     List<Film> getDirectorsFilmSortBy(Integer directorId, String sort);
+
+    List<Film> getFilmByQuery(String query, String by);
 }
