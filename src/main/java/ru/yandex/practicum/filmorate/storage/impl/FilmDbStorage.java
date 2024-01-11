@@ -637,4 +637,43 @@ public class FilmDbStorage implements FilmStorage {
 
         return jdbcTemplate.query(sql.toString(), (rs, rowNum) -> getFilmMapper(rs));
     }
+
+    @Override
+    public List<Film> getCommonFilms(long userId, Long friendId) {
+        String sqlQuery = "select " +
+                "   f.id, " +
+                "   f.name, " +
+                "   f.description, " +
+                "   f.release_date, " +
+                "   f.duration, " +
+                "   string_agg(gf.genre_id::text, ',') as genres, " +
+                "   string_agg(df.director_id::text, ',') as directors, " +
+                "   f.mpa_id, " +
+                "   m.mpa_name " +
+                "from films f " +
+                "left join genres_films gf on f.id = gf.film_id " +
+                "left join directors_films df on f.id = df.film_id " +
+                "inner join mpa m on m.id = f.mpa_id  " +
+                "inner join ( " +
+                " SELECT fl.FILM_ID  FROM FILMS_LIKES fl WHERE fl.USER_ID = ? " +
+                " INTERSECT   " +
+                " SELECT fl.FILM_ID  FROM FILMS_LIKES fl WHERE fl.USER_ID = ?  " +
+                ") fi on f.id  = fi.film_id " +
+                " LEFT JOIN FILMS_LIKES fl2 ON f.id = fl2.film_id " +
+                "group by " +
+                "   f.id, " +
+                "   f.name, " +
+                "   f.description, " +
+                "   f.release_date, " +
+                "   f.duration, " +
+                "   f.mpa_id, " +
+                "   m.mpa_name " +
+                " ORDER BY count(fl2.film_id) desc ";
+        List<Film> films = jdbcTemplate.query(sqlQuery, (rs, rowNum) -> getFilmMapper(rs), userId, friendId);
+        if (films.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return films;
+    }
 }

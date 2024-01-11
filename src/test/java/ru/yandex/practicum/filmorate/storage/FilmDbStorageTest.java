@@ -29,6 +29,7 @@ class FilmDbStorageTest {
     private final JdbcTemplate jdbcTemplate;
     private Film newFilm;
     private User newUser;
+    private User newUser2;
     private Film newFilm2;
     private Genre firstGenre;
     private Mpa firstMpa;
@@ -47,6 +48,7 @@ class FilmDbStorageTest {
         newFilm2 = new Film(2L, "film2", "description2", LocalDate.of(1992, 2, 2),
                 122, Collections.emptyList(), Collections.emptyList(), new Mpa(1,"G"));
         newUser = new User(1L, "user@email.ru", "vanya123", "Ivan Petrov", LocalDate.of(1990, 1, 1));
+        newUser2 = new User(2L, "user2@email.ru", "vanya1232", "Ivan Petrov2", LocalDate.of(1990, 1, 1));
         filmStorage = new FilmDbStorage(jdbcTemplate);
         userStorage = new UserDbStorage(jdbcTemplate);
     }
@@ -267,5 +269,24 @@ class FilmDbStorageTest {
 
         assertThat("film")
                 .isEqualTo(films.get(0).getName());
+    }
+
+    @Test
+    public void testGetCommonFriendsFilms() {
+        // Подготавливаем данные для теста
+        filmStorage.addFilm(newFilm);
+        userStorage.addUser(newUser);
+        userStorage.addUser(newUser2);
+        filmStorage.addLikeToFilm(newFilm.getId(),newUser.getId());
+        filmStorage.addLikeToFilm(newFilm.getId(),newUser2.getId());
+
+        // вызываем тестируемый метод
+        List<Film> commonFilms =  filmStorage.getCommonFilms(newUser.getId(), newUser2.getId());
+
+        // проверяем утверждения
+        assertThat(commonFilms.get(0))
+                .isNotNull() // проверяем, что объект не равен null
+                .usingRecursiveComparison() // проверяем, что значения полей нового
+                .isEqualTo(newFilm);        // и сохраненного пользователя - совпадают
     }
 }
