@@ -256,4 +256,24 @@ class FilmDbStorageTest {
         assertThat(2)
             .isEqualTo(filmStorage.getDirectorsFilmSortBy(1, "likes").size());
     }
+
+    @Test
+    public void testGetPopular() {
+        Film testFilm1 = newFilm;
+        Film testFilm2 = newFilm2;
+        Director director1 = director;
+
+        List<Director> directorList = new ArrayList<>();
+        directorList.add(director);
+
+        testFilm1.setDirectors(directorList);
+        testFilm2.setDirectors(directorList);
+
+        filmStorage.createDirector(director1);
+        filmStorage.addFilm(testFilm1);
+        filmStorage.addFilm(testFilm2);
+
+        assertThat("film")
+            .isEqualTo(filmStorage.getMostPopular(null, null, 1991).get(0).getName());
+    }
 }

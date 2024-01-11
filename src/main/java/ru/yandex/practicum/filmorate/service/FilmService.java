@@ -153,4 +153,10 @@ public class FilmService {
 
         return filmStorage.getDirectorsFilmSortBy(directorId, sort);
     }
+
+    public List<Film> getMostPopular(Integer count, Integer genreId, Integer year) {
+        log.debug("getMostPopular");
+
+        return filmStorage.getMostPopular(count, genreId, year);
+    }
 }

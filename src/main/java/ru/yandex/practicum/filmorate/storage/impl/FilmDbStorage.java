@@ -11,6 +11,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NoDirectorFoundException;
 import ru.yandex.practicum.filmorate.exception.NoFilmFoundException;
+import ru.yandex.practicum.filmorate.exception.NoGenreFoundException;
 import ru.yandex.practicum.filmorate.exception.NoUserFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Director;
@@ -190,6 +191,18 @@ public class FilmDbStorage implements FilmStorage {
         film.setDirectors(directorList);
 
         return film;
+    }
+
+    public Genre getGenre(int id) {
+        log.debug("getGenre");
+
+        String sql = "SELECT * FROM genres WHERE id = ?";
+        List<Genre> genres = jdbcTemplate.query(sql, (rs, rowNum) -> getGenreMapper(rs), id);
+        if (genres.isEmpty()) {
+            throw new NoGenreFoundException("Not found genre");
+        }
+
+        return genres.get(0);
     }
 
     @Override
@@ -585,6 +598,107 @@ public class FilmDbStorage implements FilmStorage {
         log.debug("deleteDirector");
         String sql = "DELETE FROM directors WHERE director_id = ?;";
         return jdbcTemplate.update(sql, id);
+    }
+
+    @Override
+    public List<Film> getMostPopular(Integer count, Integer genreId, Integer year) {
+        log.debug("getMostPopular");
+        int countTop = count != null ? count : countTopFilm;
+
+        if (genreId != null && getGenre(genreId) == null) {
+            throw new NoGenreFoundException("Bad genreId in most popular");
+        }
+
+        String sqlGenre = "SELECT "
+            + "f.id, "
+            + "f.name, "
+            + "f.description, "
+            + "f.release_date, "
+            + "f.duration, "
+            + "string_agg(gf.genre_id::text, ',') as genres, "
+            + "string_agg(df.director_id::text, ',') as directors, "
+            + "f.mpa_id, "
+            + "m.mpa_name "
+            + "FROM films f "
+            + "LEFT JOIN genres_films gf ON f.id = gf.film_id "
+            + "LEFT JOIN films_likes l ON f.id = l.film_id "
+            + "JOIN directors_films df ON f.id = df.film_id "
+            + "INNER JOIN mpa m ON m.id = f.mpa_id "
+            + "WHERE gf.genre_id = ? "
+            + "GROUP BY f.id, "
+            + "f.name, "
+            + "f.description, "
+            + "f.release_date, "
+            + "f.duration, "
+            + "f.mpa_id, "
+            + "m.mpa_name "
+            + "ORDER BY count(l.film_id) DESC "
+            + "LIMIT ?;";
+
+        String sqlYear = "SELECT "
+            + "f.id, "
+            + "f.name, "
+            + "f.description, "
+            + "f.release_date, "
+            + "f.duration, "
+            + "string_agg(gf.genre_id::text, ',') as genres, "
+            + "string_agg(df.director_id::text, ',') as directors, "
+            + "f.mpa_id, "
+            + "m.mpa_name "
+            + "FROM films f "
+            + "LEFT JOIN genres_films gf ON f.id = gf.film_id "
+            + "LEFT JOIN films_likes l ON f.id = l.film_id "
+            + "JOIN directors_films df ON f.id = df.film_id "
+            + "INNER JOIN mpa m ON m.id = f.mpa_id "
+            + "WHERE EXTRACT(YEAR FROM f.release_date) = ? "
+            + "GROUP BY f.id, "
+            + "f.name, "
+            + "f.description, "
+            + "f.release_date, "
+            + "f.duration, "
+            + "f.mpa_id, "
+            + "m.mpa_name "
+            + "ORDER BY count(l.film_id) DESC "
+            + "LIMIT ?;";
+
+        String sqlGenreAndYear = "SELECT "
+            + "f.id, "
+            + "f.name, "
+            + "f.description, "
+            + "f.release_date, "
+            + "f.duration, "
+            + "string_agg(gf.genre_id::text, ',') as genres, "
+            + "string_agg(df.director_id::text, ',') as directors, "
+            + "f.mpa_id, "
+            + "m.mpa_name "
+            + "FROM films f "
+            + "LEFT JOIN genres_films gf ON f.id = gf.film_id "
+            + "LEFT JOIN films_likes l ON f.id = l.film_id "
+            + "JOIN directors_films df ON f.id = df.film_id "
+            + "INNER JOIN mpa m ON m.id = f.mpa_id "
+            + "WHERE gf.genre_id = ? AND EXTRACT(YEAR FROM f.release_date) = ? "
+            + "GROUP BY f.id, "
+            + "f.name, "
+            + "f.description, "
+            + "f.release_date, "
+            + "f.duration, "
+            + "f.mpa_id, "
+            + "m.mpa_name "
+            + "ORDER BY count(l.film_id) DESC "
+            + "LIMIT ?;";
+
+        if (genreId == null && year != null) {
+            System.out.println("отработал метод 1");
+            return jdbcTemplate.query(sqlYear, (rs, rowNum) -> getFilmMapper(rs), year, countTop);
+        }
+
+        if (genreId != null && year == null) {
+            System.out.println("отработал метод 2");
+            return jdbcTemplate.query(sqlGenre, (rs, rowNum) -> getFilmMapper(rs), genreId, countTop);
+        }
+
+        System.out.println("отработал метод 3");
+        return jdbcTemplate.query(sqlGenreAndYear, (rs, rowNum) -> getFilmMapper(rs), genreId, year, countTop);
     }
 
     private static RowMapper<Director> getDirectorMapper() {

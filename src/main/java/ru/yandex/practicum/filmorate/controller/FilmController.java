@@ -90,8 +90,14 @@ public class FilmController {
     }
 
     @GetMapping("/films/popular")
-    public ResponseEntity getTopFilms(@RequestParam(required = false) Integer count) {
+    public ResponseEntity getTopFilms(@RequestParam(value = "count", required = false) Integer count,
+                                @RequestParam(value = "genreId", required = false) Integer genreId,
+                                @RequestParam(value = "year", required = false) Integer year) {
         log.debug("GET /films/popular?count={count} request");
+
+        if (genreId != null || year != null) {
+            return ResponseEntity.ok(filmService.getMostPopular(count, genreId, year));
+        }
 
         return ResponseEntity.ok(filmService.getTopNfilms(count));
     }
@@ -152,5 +158,4 @@ public class FilmController {
 
         return ResponseEntity.ok(filmService.getDirectorsFilmSortBy(directorId, sortBy));
     }
-
 }
