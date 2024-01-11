@@ -99,7 +99,8 @@ public class ReviewDbStorage implements ReviewStorage {
     @Override
     public Integer deleteReview(long id) {
         log.debug("deleteReview");
-        String sql = "DELETE FROM reviews WHERE id=?;";
+        String sql = "delete from reviews where id=?;";
+
         return jdbcTemplate.update(sql, id);
     }
 
@@ -152,7 +153,7 @@ public class ReviewDbStorage implements ReviewStorage {
                 " order by 6 desc " +
                 " limit ? ";
         } else {
-            //Фильм задан - отдаем все отзывы фильма, сортировка по полезности
+            //Фильм задан - отдаем только отзывы фильма, сортировка по полезности
             sql = "select r.id, " +
                     " r.review, " +
                     " r.is_positive, " +
@@ -188,6 +189,7 @@ public class ReviewDbStorage implements ReviewStorage {
     }
 
     private Review addLikeDislikeReview(long reviewId, long userId, boolean is_useful) {
+        log.debug("addLikeDislikeReview");
         String sqlQuery = "insert into review_estimation(review_id, user_id, is_useful) " +
                 "values (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
