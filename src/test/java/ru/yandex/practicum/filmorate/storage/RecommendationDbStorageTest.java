@@ -105,7 +105,7 @@ public class RecommendationDbStorageTest {
 
     @Test
     public void withOnlyFirstUserLikes() {
-        filmService.addLikeToFilm(1l, 1l);
+        filmService.addLikeToFilm(1L, 1L);
         List<Long> shouldBeEmpty = recommendationStorage.recommendFilms(1L);
         assertThat(shouldBeEmpty.size()).isEqualTo(0);
     }
