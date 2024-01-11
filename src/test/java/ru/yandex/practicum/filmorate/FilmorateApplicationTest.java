@@ -11,12 +11,11 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.service.RecommendationService;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
-import ru.yandex.practicum.filmorate.storage.impl.FeedDbStorage;
-import ru.yandex.practicum.filmorate.storage.impl.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.impl.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.impl.*;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -49,8 +48,10 @@ class FilmorateApplicationTest {
         validator = factory.getValidator();
         UserStorage userStorage = new InMemoryUserStorage();
         FilmStorage filmStorage = new InMemoryFilmStorage();
-        userController = new UserController(new UserService(userStorage, new FeedDbStorage(new JdbcTemplate())));
-        filmController = new FilmController(new FilmService(filmStorage,new FeedDbStorage(new JdbcTemplate())));
+        userController = new UserController(new UserService(userStorage, new FeedDbStorage(new JdbcTemplate())),
+                new RecommendationService(new FilmDbStorage(new JdbcTemplate()),
+                        new RecommendationDbStorage(new JdbcTemplate())));
+        filmController = new FilmController(new FilmService(filmStorage, new FeedDbStorage(new JdbcTemplate())));
         user = User.builder()
                 .id(null)
                 .email("email@email.ru")

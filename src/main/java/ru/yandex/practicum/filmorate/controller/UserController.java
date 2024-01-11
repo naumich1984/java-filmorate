@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.RecommendationService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
@@ -16,11 +17,13 @@ public class UserController {
 
     //  private final UserStorage userStorage; нам не нужны стораджи в контроллерах сервис и так работает со сторадж
     private final UserService userService;
+    private final RecommendationService recommendationService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, RecommendationService recommendationService) {
 
         this.userService = userService;
+        this.recommendationService = recommendationService;
     }
 
     @GetMapping("/users")
@@ -84,5 +87,12 @@ public class UserController {
         log.debug("DELETE /users/{userId}");
 
         return ResponseEntity.ok(userService.deleteUser(userId));
+    }
+
+
+    @GetMapping("/users/{id}/recommendations")
+    public ResponseEntity getRecommendation(@PathVariable Long id) {
+        log.info("GET /users/{userId}/recommendations");
+        return ResponseEntity.ok(recommendationService.getRecommendedFilms(id));
     }
 }
