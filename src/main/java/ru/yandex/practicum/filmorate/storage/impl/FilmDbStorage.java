@@ -719,4 +719,36 @@ public class FilmDbStorage implements FilmStorage {
         log.debug("filmIdMapper");
         return ((rs, rowNum) -> rs.getLong("id"));
     }
+
+    @Override
+    public List<Film> getFilmByQuery(String query, String by) {
+        log.debug("getFilmByQuery");
+        StringBuilder sql = new StringBuilder("select " +
+                "   f.id, " +
+                "   f.name, " +
+                "   f.description, " +
+                "   f.release_date, " +
+                "   f.duration, " +
+                "   string_agg(gf.genre_id::text, ',') as genres, " +
+                "   string_agg(df.director_id::text, ',') as directors, " +
+                "   f.mpa_id, " +
+                "   m.mpa_name " +
+                " from films f " +
+                " left join films_likes fl on f.id = fl.film_id " +
+                " left join genres_films gf on f.id = gf.film_id " +
+                " left join mpa m on m.id = f.mpa_id " +
+                " left join directors_films df on f.id = df.film_id " +
+                " left join directors d on df.director_id = d.director_id ");
+        if (by.equals("title")) {
+            sql.append(" where lower(f.name) like lower('%").append(query).append("%') ");
+        } else if (by.equals("director")) {
+            sql.append(" where lower(d.director_name) like lower('%").append(query).append("%') ");
+        } else if (by.equals("title,director") || by.equals("director,title")) {
+            sql.append(" where lower(f.name) like lower('%").append(query).append("%') ");
+            sql.append(" or lower(d.director_name) like lower('%").append(query).append("%') ");
+        }
+        sql.append(" group by f.id order by count(fl.film_id) desc");
+
+        return jdbcTemplate.query(sql.toString(), (rs, rowNum) -> getFilmMapper(rs));
+    }
 }

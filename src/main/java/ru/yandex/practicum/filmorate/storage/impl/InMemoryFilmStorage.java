@@ -199,6 +199,11 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
+    public List<Film> getFilmByQuery(String query, String by) {
+        return null;
+    }
+
+    @Override
     public List<Film> getMostPopular(Integer count, Integer genreId, Integer year) {
         return null;
     }

@@ -258,6 +258,18 @@ class FilmDbStorageTest {
     }
 
     @Test
+    public void testGetFilmByQuery() {
+        filmStorage.addFilm(newFilm);
+        userStorage.addUser(newUser);
+        filmStorage.addLikeToFilm(newFilm.getId(), newUser.getId());
+
+        List<Film> films = filmStorage.getFilmByQuery("fil","title,director");
+
+        assertThat("film")
+                .isEqualTo(films.get(0).getName());
+    }
+
+    @Test
     public void testGetPopular() {
         Film testFilm1 = newFilm;
         Film testFilm2 = newFilm2;
