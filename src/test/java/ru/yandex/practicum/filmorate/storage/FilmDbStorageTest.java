@@ -288,4 +288,10 @@ class FilmDbStorageTest {
         assertThat("film")
             .isEqualTo(filmStorage.getMostPopular(null, null, 1991).get(0).getName());
     }
+
+    @Test
+    public void testEmptyMostPopular() {
+        assertThat(0)
+            .isEqualTo(filmStorage.getMostPopular(null, null, null).size());
+    }
 }
