@@ -161,4 +161,12 @@ public class FilmController {
         return ResponseEntity.ok(filmService.getFilmStorage().getFilmByQuery(query, by));
     }
 
+    @GetMapping("/films/common")
+    public ResponseEntity getCommonFilms(@RequestParam(required = true )long userId,
+                                         @RequestParam(required = true ) long friendId) {
+        log.debug("GET /films/common?userId={userId}&friendId={friendId}");
+
+        return ResponseEntity.ok(filmService.getFilmStorage().getCommonFilms(userId, friendId));
+    }
+
 }

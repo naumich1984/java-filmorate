@@ -202,4 +202,9 @@ public class InMemoryFilmStorage implements FilmStorage {
     public List<Film> getFilmByQuery(String query, String by) {
         return null;
     }
+
+    @Override
+    public List<Film> getCommonFilms(long userId, Long friendId) {
+        return null;
+    }
 }
