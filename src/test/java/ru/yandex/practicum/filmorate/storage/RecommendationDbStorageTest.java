@@ -42,29 +42,29 @@ public class RecommendationDbStorageTest {
         filmService = new FilmService(new FilmDbStorage(jdbcTemplate), new FeedDbStorage(jdbcTemplate));
         recommendationStorage = new RecommendationDbStorage(jdbcTemplate);
 
-        User user1 = User.builder().
-                email("user1@yandex.ru").
-                login("user1").name("USER_NAME").
-                birthday(LocalDate.of(1998, 8, 16))
+        User user1 = User.builder()
+                .email("user1@yandex.ru")
+                .login("user1").name("USER_NAME")
+                .birthday(LocalDate.of(1998, 8, 16))
                 .build();
-        User user2 = User.builder().
-                email("user2@yandex.ru").
-                login("user1").name("USER_2_NAME").
-                birthday(LocalDate.of(1998, 8, 16))
+        User user2 = User.builder()
+                .email("user2@yandex.ru")
+                .login("user1").name("USER_2_NAME")
+                .birthday(LocalDate.of(1998, 8, 16))
                 .build();
         User user3 = User.builder()
-                .email("user3@yandex.ru").
-                login("user3").
-                name("USER3_NAME").
-                birthday(LocalDate.of(1998, 8, 16))
+                .email("user3@yandex.ru")
+                .login("user3")
+                .name("USER3_NAME")
+                .birthday(LocalDate.of(1998, 8, 16))
                 .build();
 
         userService.getUserStorage().addUser(user1);
         userService.getUserStorage().addUser(user2);
         userService.getUserStorage().addUser(user3);
 
-        Film film1 = Film.builder().
-                name("Форсаж")
+        Film film1 = Film.builder()
+                .name("Форсаж")
                 .mpa(new Mpa(1, null))
                 .description("гонки 1")
                 .duration(90)
@@ -72,8 +72,8 @@ public class RecommendationDbStorageTest {
                 .genres(new ArrayList<>())
                 .directors(new ArrayList<>())
                 .build();
-        Film film2 = Film.builder().
-                name("Форсаж 2")
+        Film film2 = Film.builder()
+                .name("Форсаж 2")
                 .mpa(new Mpa(1, null))
                 .description("гонки 2")
                 .duration(90)
@@ -81,8 +81,8 @@ public class RecommendationDbStorageTest {
                 .genres(new ArrayList<>())
                 .directors(new ArrayList<>())
                 .build();
-        Film film3 = Film.builder().
-                name("Форсаж 3")
+        Film film3 = Film.builder()
+                .name("Форсаж 3")
                 .mpa(new Mpa(1, null))
                 .description("гонки 3")
                 .duration(90)
@@ -112,31 +112,31 @@ public class RecommendationDbStorageTest {
 
     @Test
     public void withSameFirstUserLikes() {
-        filmService.addLikeToFilm(1l, 1l);
-        filmService.addLikeToFilm(1l, 2l);
+        filmService.addLikeToFilm(1L, 1L);
+        filmService.addLikeToFilm(1L, 2L);
         List<Long> shouldBeEmpty = recommendationStorage.recommendFilms(1L);
         assertThat(shouldBeEmpty.size()).isEqualTo(0);
     }
 
     @Test
     public void withNoSameFirstUserLikes() {
-        filmService.addLikeToFilm(1l, 1l);
-        filmService.addLikeToFilm(2l, 2l);
+        filmService.addLikeToFilm(1L, 1L);
+        filmService.addLikeToFilm(2L, 2L);
         List<Long> shouldBeEmpty = recommendationStorage.recommendFilms(1L);
         assertThat(shouldBeEmpty.size()).isEqualTo(1);
-        assertThat(shouldBeEmpty.get(0)).isEqualTo(2l);
+        assertThat(shouldBeEmpty.get(0)).isEqualTo(2L);
     }
 
     @Test
     public void withSameLikesWithThirdUser() {
-        filmService.addLikeToFilm(1l, 1l);
-        filmService.addLikeToFilm(2l, 1l);
-        filmService.addLikeToFilm(1l, 3l);
-        filmService.addLikeToFilm(2l, 3l);
-        filmService.addLikeToFilm(3l, 3l);
+        filmService.addLikeToFilm(1L, 1L);
+        filmService.addLikeToFilm(2L, 1L);
+        filmService.addLikeToFilm(1L, 3L);
+        filmService.addLikeToFilm(2L, 3L);
+        filmService.addLikeToFilm(3L, 3L);
         List<Long> shouldBeEmpty = recommendationStorage.recommendFilms(1L);
         assertThat(shouldBeEmpty.size()).isEqualTo(1);
-        assertThat(shouldBeEmpty.get(0)).isEqualTo(3l);
+        assertThat(shouldBeEmpty.get(0)).isEqualTo(3L);
     }
 
 
