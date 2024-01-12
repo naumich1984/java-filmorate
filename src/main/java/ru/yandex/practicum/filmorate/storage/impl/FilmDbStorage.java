@@ -615,8 +615,8 @@ public class FilmDbStorage implements FilmStorage {
                 "   f.description, " +
                 "   f.release_date, " +
                 "   f.duration, " +
-                "   string_agg(gf.genre_id::text, ',') as genres, " +
-                "   string_agg(df.director_id::text, ',') as directors, " +
+                "   string_agg(distinct gf.genre_id::text, ',') as genres, " +
+                "   string_agg(distinct df.director_id::text, ',') as directors, " +
                 "   f.mpa_id, " +
                 "   m.mpa_name " +
                 " from films f " +
