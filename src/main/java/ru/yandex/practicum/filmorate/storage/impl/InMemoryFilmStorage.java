@@ -53,7 +53,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getTopNfilms(Integer count) {
+    public List<Film> getTopNfilms(Integer count, Integer genreId, Integer year) {
         int countTop = count != null ? count : countTopFilm;
         log.debug("top films count = {}", countTop);
 

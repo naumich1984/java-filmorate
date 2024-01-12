@@ -90,11 +90,14 @@ public class FilmController {
     }
 
     @GetMapping("/films/popular")
-    public ResponseEntity getTopFilms(@RequestParam(required = false) Integer count) {
-        log.debug("GET /films/popular?count={count} request");
+    public ResponseEntity getTopFilms(@RequestParam(required = false) Integer count,
+                                      @RequestParam(required = false) Integer genreId,
+                                      @RequestParam(required = false) Integer year) {
+        log.debug("GET /films/popular?count={limit}&genreId={genreId}&year={year}");
 
-        return ResponseEntity.ok(filmService.getTopNfilms(count));
+        return ResponseEntity.ok(filmService.getTopNfilms(count, genreId, year));
     }
+
 
     @GetMapping("/films/{id}")
     public ResponseEntity getFilm(@PathVariable long id) {
