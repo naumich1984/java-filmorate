@@ -313,10 +313,8 @@ class FilmDbStorageTest {
 
         filmStorage.addLikeToFilm(1L,1L);
 
-        // вызываем тестируемый метод
         Film savedFilm = filmStorage.getTopNfilms(10, 1, 1991).get(0);
 
-        // проверяем утверждения
         assertThat(savedFilm)
                 .isNotNull() // проверяем, что объект не равен null
                 .usingRecursiveComparison() // проверяем, что значения полей нового
