@@ -285,4 +285,41 @@ class FilmDbStorageTest {
                 .usingRecursiveComparison() // проверяем, что значения полей нового
                 .isEqualTo(newFilm);        // и сохраненного пользователя - совпадают
     }
+
+    @Test
+    public void testGetTopNfilmsYear() {
+        // Подготавливаем данные для теста
+        filmStorage.addFilm(newFilm);
+        userStorage.addUser(newUser);
+
+        filmStorage.addLikeToFilm(1L,1L);
+
+        // вызываем тестируемый метод
+        Film savedFilm = filmStorage.getTopNfilms(10, null, 1991).get(0);
+
+        // проверяем утверждения
+        assertThat(savedFilm)
+                .isNotNull() // проверяем, что объект не равен null
+                .usingRecursiveComparison() // проверяем, что значения полей нового
+                .isEqualTo(newFilm);        // и сохраненного пользователя - совпадают
+    }
+
+    @Test
+    public void testGetTopNfilmsGenreId() {
+        // Подготавливаем данные для теста
+        newFilm.setGenres(List.of(new Genre(1,"Комедия")));
+        filmStorage.addFilm(newFilm);
+        userStorage.addUser(newUser);
+
+        filmStorage.addLikeToFilm(1L,1L);
+
+        // вызываем тестируемый метод
+        Film savedFilm = filmStorage.getTopNfilms(10, 1, 1991).get(0);
+
+        // проверяем утверждения
+        assertThat(savedFilm)
+                .isNotNull() // проверяем, что объект не равен null
+                .usingRecursiveComparison() // проверяем, что значения полей нового
+                .isEqualTo(newFilm);        // и сохраненного пользователя - совпадают
+    }
 }
