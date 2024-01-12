@@ -10,10 +10,6 @@ import ru.yandex.practicum.filmorate.exception.NoGenreFoundException;
 import ru.yandex.practicum.filmorate.exception.NoUserFoundException;
 import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.FeedStorage;
-import ru.yandex.practicum.filmorate.model.Director;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.List;
@@ -82,11 +78,11 @@ public class FilmService {
         return filmResult;
     }
 
-    public List<Film> getTopNfilms(Integer count) {
+    public List<Film> getTopNfilms(Integer count, Integer genreId, Integer year) {
         int countTop = Optional.ofNullable(count).orElse(countTopFilm);
         log.debug("top films count = {}", countTop);
 
-        return filmStorage.getTopNfilms(countTop);
+        return filmStorage.getTopNfilms(countTop, genreId, year);
     }
 
     public Film getFilm(Long filmId) {

@@ -23,7 +23,7 @@ public interface FilmStorage {
 
     Film addLikeToFilm(Long filmId, Long userId);
 
-    List<Film> getTopNfilms(Integer count);
+    List<Film> getTopNfilms(Integer count, Integer genreId, Integer year);
 
     Film deleteLikeFromFilm(Long filmId, Long userId);
 

@@ -1,7 +1,5 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,16 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import ru.yandex.practicum.filmorate.model.Director;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.impl.FilmDbStorage;
 import ru.yandex.practicum.filmorate.storage.impl.UserDbStorage;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -122,7 +118,7 @@ class FilmDbStorageTest {
         filmStorage.addLikeToFilm(1L,1L);
 
         // вызываем тестируемый метод
-        Film savedFilm = filmStorage.getTopNfilms(10).get(0);
+        Film savedFilm = filmStorage.getTopNfilms(10, null, null).get(0);
 
         // проверяем утверждения
         assertThat(savedFilm)
@@ -172,7 +168,7 @@ class FilmDbStorageTest {
         assertThat(savedFilm)
                 .isNotNull() // проверяем, что объект не равен null
                 .usingRecursiveComparison() // проверяем, что значения полей нового
-                .isEqualTo(filmStorage.getTopNfilms(1).get(0));        // и сохраненного пользователя - совпадают
+                .isEqualTo(filmStorage.getTopNfilms(1, null, null).get(0));        // и сохраненного пользователя - совпадают
     }
 
     @Test
@@ -191,7 +187,7 @@ class FilmDbStorageTest {
         assertThat(newFilm2)
                 .isNotNull() // проверяем, что объект не равен null
                 .usingRecursiveComparison() // проверяем, что значения полей нового
-                .isEqualTo(filmStorage.getTopNfilms(1).get(0));        // и сохраненного пользователя - совпадают
+                .isEqualTo(filmStorage.getTopNfilms(1, null, null).get(0));        // и сохраненного пользователя - совпадают
     }
 
     @Test
@@ -285,6 +281,41 @@ class FilmDbStorageTest {
 
         // проверяем утверждения
         assertThat(commonFilms.get(0))
+                .isNotNull() // проверяем, что объект не равен null
+                .usingRecursiveComparison() // проверяем, что значения полей нового
+                .isEqualTo(newFilm);        // и сохраненного пользователя - совпадают
+    }
+
+    @Test
+    public void testGetTopNfilmsYear() {
+        // Подготавливаем данные для теста
+        filmStorage.addFilm(newFilm);
+        userStorage.addUser(newUser);
+
+        filmStorage.addLikeToFilm(1L,1L);
+
+        // вызываем тестируемый метод
+        Film savedFilm = filmStorage.getTopNfilms(10, null, 1991).get(0);
+
+        // проверяем утверждения
+        assertThat(savedFilm)
+                .isNotNull() // проверяем, что объект не равен null
+                .usingRecursiveComparison() // проверяем, что значения полей нового
+                .isEqualTo(newFilm);        // и сохраненного пользователя - совпадают
+    }
+
+    @Test
+    public void testGetTopNfilmsGenreId() {
+        // Подготавливаем данные для теста
+        newFilm.setGenres(List.of(new Genre(1,"Комедия")));
+        filmStorage.addFilm(newFilm);
+        userStorage.addUser(newUser);
+
+        filmStorage.addLikeToFilm(1L,1L);
+
+        Film savedFilm = filmStorage.getTopNfilms(10, 1, 1991).get(0);
+
+        assertThat(savedFilm)
                 .isNotNull() // проверяем, что объект не равен null
                 .usingRecursiveComparison() // проверяем, что значения полей нового
                 .isEqualTo(newFilm);        // и сохраненного пользователя - совпадают
