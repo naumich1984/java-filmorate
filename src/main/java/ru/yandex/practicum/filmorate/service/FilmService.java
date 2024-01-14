@@ -5,9 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.NoFilmFoundException;
-import ru.yandex.practicum.filmorate.exception.NoGenreFoundException;
-import ru.yandex.practicum.filmorate.exception.NoUserFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -39,7 +37,7 @@ public class FilmService {
             return filmStorage.getAllGenres().stream()
                     .filter(f -> f.getId().equals(genreId)).findFirst().get();
         } catch (NoSuchElementException ex) {
-            throw new NoGenreFoundException(ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
         }
     }
 
@@ -50,7 +48,7 @@ public class FilmService {
             return filmStorage.getAllMpa().stream()
                     .filter(f -> f.getId().equals(mpaId)).findFirst().get();
         } catch (NoSuchElementException ex) {
-            throw new NoGenreFoundException(ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
         }
     }
 
@@ -89,10 +87,10 @@ public class FilmService {
         log.debug("filmId {}", filmId);
         try {
             Film film = filmStorage.getFilm(filmId);
-            if (film == null) throw new NoUserFoundException("Film not found!");
+            if (film == null) throw new NotFoundException("Film not found!");
             return film;
         } catch (NoSuchElementException e) {
-            throw new NoUserFoundException(e.getMessage());
+            throw new NotFoundException(e.getMessage());
         }
     }
 
@@ -109,7 +107,7 @@ public class FilmService {
             }
             default: {
                 log.error("DELETED MORE THAN ONE FILM");
-                throw new NoFilmFoundException("Something went wrong!");
+                throw new NotFoundException("Something went wrong!");
             }
         }
     }

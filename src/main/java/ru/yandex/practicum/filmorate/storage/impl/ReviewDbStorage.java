@@ -7,9 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.NoFilmFoundException;
-import ru.yandex.practicum.filmorate.exception.NoReviewFoundException;
-import ru.yandex.practicum.filmorate.exception.NoUserFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.storage.ReviewStorage;
@@ -45,11 +43,11 @@ public class ReviewDbStorage implements ReviewStorage {
         }
         if (existsUser.get(0).get(1) == 0) {
             log.error("Film not found!");
-            throw new NoFilmFoundException("Film not found!");
+            throw new NotFoundException("Film not found!");
         }
         if (existsUser.get(0).get(2) == 0) {
             log.error("User not found!");
-            throw new NoUserFoundException("User not found!");
+            throw new NotFoundException("User not found!");
         }
     }
 
@@ -119,7 +117,7 @@ public class ReviewDbStorage implements ReviewStorage {
                 " order by 6 desc ";
         List<Review> reviews = jdbcTemplate.query(sql, (rs, rowNum) -> getReviewMapper(rs), id);
         if (reviews.isEmpty()) {
-            throw new NoReviewFoundException("Review not found!");
+            throw new NotFoundException("Review not found!");
         }
 
         return reviews.get(0);
