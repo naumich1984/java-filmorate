@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.NoUserFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Feed;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FeedStorage;
@@ -32,7 +32,7 @@ public class FeedService {
     public List<Feed> getUserFeed(Long userId) {
         User user = userStorage.getUser(userId);
         if (!Optional.ofNullable(user).isPresent()) {
-            throw new NoUserFoundException("User not found! Can`t get feeds!");
+            throw new NotFoundException("User not found! Can`t get feeds!");
         }
 
         return feedStorage.getUserFeed(userId);

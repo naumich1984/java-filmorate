@@ -8,7 +8,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NoFriednshipConfimException;
-import ru.yandex.practicum.filmorate.exception.NoUserFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
@@ -119,7 +119,7 @@ public class UserDbStorage implements UserStorage {
         List<Integer> existsUser = jdbcTemplate.query(sql, (rs, rowNum) -> existsUserMapper(rs), userID);
         if (existsUser.get(0) == countValue) {
             log.error(errorMessage);
-            throw new NoUserFoundException(errorMessage);
+            throw new NotFoundException(errorMessage);
         }
     }
 

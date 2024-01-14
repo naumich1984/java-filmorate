@@ -9,9 +9,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.NoDirectorFoundException;
-import ru.yandex.practicum.filmorate.exception.NoFilmFoundException;
-import ru.yandex.practicum.filmorate.exception.NoUserFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -235,7 +233,7 @@ public class FilmDbStorage implements FilmStorage {
         List<Integer> existsFilm = jdbcTemplate.query(sql, (rs, rowNum) -> existsFilmMapper(rs), userID);
         if (existsFilm.get(0) == countValue) {
             log.error(errorMessage);
-            throw new NoUserFoundException(errorMessage);
+            throw new NotFoundException(errorMessage);
         }
     }
 
@@ -272,7 +270,7 @@ public class FilmDbStorage implements FilmStorage {
                 "   m.mpa_name ";
         List<Film> films = jdbcTemplate.query(sqlQuery, (rs, rowNum) -> getFilmMapper(rs), filmId);
         if (films.isEmpty()) {
-            throw new NoFilmFoundException("Film not found!");
+            throw new NotFoundException("Film not found!");
         }
 
         return films.get(0);
@@ -299,7 +297,7 @@ public class FilmDbStorage implements FilmStorage {
         List<List<Integer>> likesParameters = jdbcTemplate.query(sqlQuery, (rs, rowNum) -> getLikesMapper(rs),
                 filmId, userId, filmId, userId);
         if (likesParameters.isEmpty()) {
-            throw new NoFilmFoundException("Not found!");
+            throw new NotFoundException("Not found!");
         }
 
         return likesParameters.get(0);
@@ -311,11 +309,11 @@ public class FilmDbStorage implements FilmStorage {
         List<Integer> likesParameters = checkLikes(filmId, userId);
 
         if (likesParameters.get(0) == 0) {
-            throw new NoFilmFoundException("Film not found!");
+            throw new NotFoundException("Film not found!");
         }
 
         if (likesParameters.get(1) == 0) {
-            throw new NoUserFoundException("User not found!");
+            throw new NotFoundException("User not found!");
         }
 
         if (likesParameters.get(2) > 0) {
@@ -340,11 +338,11 @@ public class FilmDbStorage implements FilmStorage {
         List<Integer> likesParameters = checkLikes(filmId, userId);
 
         if (likesParameters.get(0) == 0) {
-            throw new NoFilmFoundException("Film not found!");
+            throw new NotFoundException("Film not found!");
         }
 
         if (likesParameters.get(1) == 0) {
-            throw new NoUserFoundException("User not found!");
+            throw new NotFoundException("User not found!");
         }
 
         if (likesParameters.get(2) == 0) {
@@ -450,7 +448,7 @@ public class FilmDbStorage implements FilmStorage {
             return director;
         } catch (RuntimeException e) {
             log.warn("Not found director with id = {}", id);
-            throw new NoDirectorFoundException("Not found director with id = " + id);
+            throw new NotFoundException("Not found director with id = " + id);
         }
     }
 
@@ -458,7 +456,7 @@ public class FilmDbStorage implements FilmStorage {
         log.debug("getDirectorsByFilmId");
         if (getFilm(filmId) == null) {
             log.warn("Not found film with id = {}", filmId);
-            throw new NoFilmFoundException("Not found film with id = " + filmId);
+            throw new NotFoundException("Not found film with id = " + filmId);
         }
 
         String sql = "SELECT "
@@ -480,12 +478,12 @@ public class FilmDbStorage implements FilmStorage {
     public List<Film> getDirectorsFilmSortBy(Integer directorId, String sort) {
         log.debug("getDirectorsFilmSortBy");
         if (!sort.equals("year") && !sort.equals("likes")) {
-            throw new NoDirectorFoundException("Bad sortBy request");
+            throw new NotFoundException("Bad sortBy request");
         }
 
         if (getDirector(directorId) == null) {
             log.warn("Not found director with id = {}", directorId);
-            throw new NoDirectorFoundException("Not found director with id = " + directorId);
+            throw new NotFoundException("Not found director with id = " + directorId);
         }
 
         String sqlByLikes = "SELECT "
@@ -576,7 +574,7 @@ public class FilmDbStorage implements FilmStorage {
         log.debug("updateDirector");
         if (getDirector(director.getId()) == null) {
             log.warn("Not found director with id = {}", director.getId());
-            throw new NoDirectorFoundException("Not found director with id = " + director.getId());
+            throw new NotFoundException("Not found director with id = " + director.getId());
         }
 
         String sql = "UPDATE directors SET "

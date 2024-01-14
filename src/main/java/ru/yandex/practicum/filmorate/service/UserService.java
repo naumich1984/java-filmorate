@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.NoUserFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.FeedEventType;
 import ru.yandex.practicum.filmorate.model.FeedOperations;
 import ru.yandex.practicum.filmorate.model.User;
@@ -56,10 +56,10 @@ public class UserService {
         log.debug("userId {}", userId);
         try {
             User user = userStorage.getUser(userId);
-            if (user == null) throw new NoUserFoundException("User not found!");
+            if (user == null) throw new NotFoundException("User not found!");
             return user;
         } catch (NoSuchElementException e) {
-            throw new NoUserFoundException(e.getMessage());
+            throw new NotFoundException(e.getMessage());
         }
     }
 
@@ -69,7 +69,7 @@ public class UserService {
             List<User> userFriends = userStorage.getUserFriends(userId);
             return userFriends;
         } catch (NoSuchElementException e) {
-            throw new NoUserFoundException(e.getMessage());
+            throw new NotFoundException(e.getMessage());
         }
     }
 
@@ -100,7 +100,7 @@ public class UserService {
             }
             default: {
                 log.error("DELETED MORE THAN ONE USER!!!");
-                throw new NoUserFoundException("Something went wrong!");
+                throw new NotFoundException("Something went wrong!");
             }
         }
     }
