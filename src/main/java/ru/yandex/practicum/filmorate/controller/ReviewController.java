@@ -38,6 +38,7 @@ public class ReviewController {
     @DeleteMapping("/reviews/{id}")
     public ResponseEntity<Integer> deleteReview(@PathVariable Long id) {
         log.debug("DELETE /reviews/{id} request");
+        log.debug("id: {}", id);
 
         return ResponseEntity.ok(reviewService.deleteReview(id));
     }
@@ -45,6 +46,7 @@ public class ReviewController {
     @GetMapping("/reviews/{id}")
     public ResponseEntity<Review> getReview(@PathVariable long id) {
         log.debug("GET /reviews/{id} request");
+        log.debug("id: {}", id);
 
         return ResponseEntity.ok(reviewService.getReviewStorage().getReview(id));
     }
@@ -53,6 +55,7 @@ public class ReviewController {
     public ResponseEntity<List<Review>> getReviews(@RequestParam(required = false) Long filmId,
                                                    @RequestParam(required = false, defaultValue = "10") @Positive Long count) {
         log.debug("GET /reviews?filmId={filmId}&count={count}");
+        log.debug("filmId: {} count: {}", filmId, count);
 
         return ResponseEntity.ok(reviewService.getReviewStorage().getReviews(filmId, count));
     }
@@ -60,6 +63,7 @@ public class ReviewController {
     @PutMapping("/reviews/{id}/like/{userId}")
     public ResponseEntity<Review> addLikeToReview(@PathVariable long id, @PathVariable long userId) {
         log.debug("PUT /reviews/{id}/like/{userId}");
+        log.debug("id: {} userId: {}", id, userId);
 
         return ResponseEntity.ok(reviewService.addLikeReview(id, userId));
     }
@@ -67,6 +71,7 @@ public class ReviewController {
     @PutMapping("/reviews/{id}/dislike/{userId}")
     public ResponseEntity<Review> addDislikeToReview(@PathVariable long id, @PathVariable long userId) {
         log.debug("PUT /reviews/{id}/dislike/{userId}");
+        log.debug("id: {} userId: {}", id, userId);
 
         return ResponseEntity.ok(reviewService.getReviewStorage().addDislikeReview(id, userId));
     }
@@ -74,6 +79,7 @@ public class ReviewController {
     @DeleteMapping("/reviews/{id}/like/{userId}")
     public ResponseEntity<Review> deleteLikeToReview(@PathVariable long id, @PathVariable long userId) {
         log.debug("DELETE /reviews/{id}/like/{userId}");
+        log.debug("id: {} userId: {}", id, userId);
 
         return ResponseEntity.ok(reviewService.deleteLikeReview(id, userId));
     }
@@ -81,6 +87,7 @@ public class ReviewController {
     @DeleteMapping("/reviews/{id}/dislike/{userId}")
     public ResponseEntity<Review> deleteDislikeToReview(@PathVariable long id, @PathVariable long userId) {
         log.debug("DELETE /reviews/{id}/dislike/{userId}");
+        log.debug("id: {} userId: {}", id, userId);
 
         return ResponseEntity.ok(reviewService.getReviewStorage().deleteDislikeReview(id, userId));
     }

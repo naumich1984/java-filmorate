@@ -21,6 +21,7 @@ public class FeedController {
     @GetMapping("/users/{id}/feed")
     public ResponseEntity<List<Feed>> getUserFeed(@PathVariable long id) {
         log.debug("GET /users/{id}/feed request");
+        log.debug("id: {}", id);
 
         return ResponseEntity.ok(feedService.getUserFeed(id));
     }

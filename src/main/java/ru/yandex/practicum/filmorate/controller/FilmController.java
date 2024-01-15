@@ -34,6 +34,7 @@ public class FilmController {
     @GetMapping("/genres/{id}")
     public ResponseEntity<Genre> getGenre(@PathVariable int id) {
         log.debug("GET /genres/{id} request");
+        log.debug("id: {}", id);
 
         return ResponseEntity.ok(filmService.getGenre(id));
     }
@@ -49,6 +50,7 @@ public class FilmController {
     @GetMapping("/mpa/{id}")
     public ResponseEntity<Mpa> getMpa(@PathVariable Integer id) {
         log.debug("GET /mpa/{id} request");
+        log.debug("id: {}", id);
 
         return ResponseEntity.ok(filmService.getMpa(id));
     }
@@ -78,6 +80,7 @@ public class FilmController {
     @PutMapping("/films/{id}/like/{userId}")
     public ResponseEntity<Film> addLike(@PathVariable long id, @PathVariable long userId) {
         log.debug("PUT /films/{id}/like/{userId} request");
+        log.debug("id: {}, userId: {}", id, userId);
 
         return ResponseEntity.ok(filmService.addLikeToFilm(id, userId));
     }
@@ -85,6 +88,7 @@ public class FilmController {
     @DeleteMapping("/films/{id}/like/{userId}")
     public ResponseEntity<Film> deleteLike(@PathVariable long id, @PathVariable long userId) {
         log.debug("DELETE /films/{id}/like/{userId} request");
+        log.debug("id: {}, userId: {}", id, userId);
 
         return ResponseEntity.ok(filmService.deleteLikeFromFilm(id, userId));
     }
@@ -94,6 +98,7 @@ public class FilmController {
                                       @RequestParam(required = false) Integer genreId,
                                       @RequestParam(required = false) @Positive  @Min(1895) Integer year) {
         log.debug("GET /films/popular?count={limit}&genreId={genreId}&year={year}");
+        log.debug("count: {}, genreId: {}, year: {}", count, genreId, year);
 
         return ResponseEntity.ok(filmService.getTopNfilms(count, genreId, year));
     }
@@ -102,6 +107,7 @@ public class FilmController {
     @GetMapping("/films/{id}")
     public ResponseEntity<Film> getFilm(@PathVariable long id) {
         log.debug("GET /films/{id} request");
+        log.debug("id: {}", id);
 
         return ResponseEntity.ok(filmService.getFilm(id));
     }
@@ -109,6 +115,7 @@ public class FilmController {
     @DeleteMapping("/films/{filmId}")
     public ResponseEntity<String> deleteFilm(@PathVariable Long filmId) {
         log.debug("DELETE /films/{id} request");
+        log.debug("filmId: {}", filmId);
 
         return ResponseEntity.ok(filmService.deleteFilm(filmId));
     }
@@ -123,6 +130,7 @@ public class FilmController {
     @GetMapping("/directors/{id}")
     public ResponseEntity<Director> getDirector(@PathVariable Integer id) {
         log.debug("GET /directors/{id} request");
+        log.debug("id: {}", id);
 
         return ResponseEntity.ok(filmService.getDirector(id));
     }
@@ -144,6 +152,7 @@ public class FilmController {
     @DeleteMapping("/directors/{id}")
     public ResponseEntity<Integer> deleteDirector(@PathVariable Integer id) {
         log.debug("DELETE /directors/{id}");
+        log.debug("id: {}", id);
 
         return ResponseEntity.ok(filmService.deleteDirector(id));
     }
@@ -152,6 +161,7 @@ public class FilmController {
     public ResponseEntity<List<Film>> getDirectorsFilmSortBy(@PathVariable Integer directorId,
                                         @RequestParam(value = "sortBy", required = false) DirectorSorting sortBy) {
         log.debug("GET /films/director/{directorId}?sortBy");
+        log.debug("directorId: {}", directorId);
 
         return ResponseEntity.ok(filmService.getDirectorsFilmSortBy(directorId, sortBy.name()));
     }
@@ -160,6 +170,7 @@ public class FilmController {
     public ResponseEntity<List<Film>> getFilmByQuery(@RequestParam(value = "query", defaultValue = "empty") String query,
                                          @RequestParam(value = "by", defaultValue = "empty") String by) {
         log.debug("GET /films/search?query={query}&by={List.of(director,title)}");
+        log.debug("query: {}", query);
 
         return ResponseEntity.ok(filmService.getFilmStorage().getFilmByQuery(query, by));
     }
@@ -168,6 +179,7 @@ public class FilmController {
     public ResponseEntity<List<Film>> getCommonFilms(@RequestParam(required = true) long userId,
                                          @RequestParam(required = true) long friendId) {
         log.debug("GET /films/common?userId={userId}&friendId={friendId}");
+        log.debug("userId: {}, friendId: {}", userId, friendId);
 
         return ResponseEntity.ok(filmService.getFilmStorage().getCommonFilms(userId, friendId));
     }

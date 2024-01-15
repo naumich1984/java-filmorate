@@ -45,6 +45,7 @@ public class UserController {
     @PutMapping("/users/{id}/friends/{friendId}")
     public ResponseEntity<User> addFriend(@PathVariable long id, @PathVariable long friendId) {
         log.debug("PUT /users/{id}/friends/{friendId} request");
+        log.debug("id: {} userId: {}", id, friendId);
 
         return ResponseEntity.ok(userService.addFriend(id, friendId));
     }
@@ -52,6 +53,7 @@ public class UserController {
     @DeleteMapping("/users/{id}/friends/{friendId}")
     public ResponseEntity<User> deleteFriend(@PathVariable long id, @PathVariable long friendId) {
         log.debug("DELETE /users/{id}/friends/{friendId} request");
+        log.debug("id: {} userId: {}", id, friendId);
 
         return ResponseEntity.ok(userService.deleteFriend(id, friendId));
     }
@@ -59,6 +61,7 @@ public class UserController {
     @GetMapping("/users/{id}")
     public ResponseEntity<User> getUser(@PathVariable long id) {
         log.debug("GET /users/{id} request");
+        log.debug("id: {}", id);
 
         return ResponseEntity.ok(userService.getUser(id));
     }
@@ -66,6 +69,7 @@ public class UserController {
     @GetMapping("/users/{id}/friends")
     public ResponseEntity<List<User>> getUserFriends(@PathVariable long id) {
         log.debug("GET /users/{id}/friends request");
+        log.debug("id: {}", id);
 
         return ResponseEntity.ok(userService.getUserFriends(id));
     }
@@ -73,6 +77,7 @@ public class UserController {
     @GetMapping("/users/{id}/friends/common/{otherId}")
     public ResponseEntity<List<User>> findCommonFriends(@PathVariable long id, @PathVariable long otherId) {
         log.debug("GET /users/{id}/friends/common/{otherId} request");
+        log.debug("id: {} otherId: {}", id, otherId);
 
         return ResponseEntity.ok(userService.findCommonFriends(id, otherId));
     }
@@ -80,14 +85,16 @@ public class UserController {
     @DeleteMapping("/users/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
         log.debug("DELETE /users/{userId}");
+        log.debug("userId: {}", userId);
 
         return ResponseEntity.ok(userService.deleteUser(userId));
     }
 
-
     @GetMapping("/users/{id}/recommendations")
     public ResponseEntity<List<Film>> getRecommendation(@PathVariable Long id) {
         log.info("GET /users/{userId}/recommendations");
+        log.debug("id: {}", id);
+
         return ResponseEntity.ok(recommendationService.getRecommendedFilms(id));
     }
 }
