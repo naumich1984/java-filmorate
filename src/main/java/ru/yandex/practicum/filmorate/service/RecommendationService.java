@@ -16,8 +16,8 @@ import java.util.List;
 @Data
 public class RecommendationService {
 
-    FilmStorage filmStorage;
-    RecommendationStorage recommendationStorage;
+    private FilmStorage filmStorage;
+    private RecommendationStorage recommendationStorage;
 
     @Autowired
     public RecommendationService(FilmStorage filmStorage, RecommendationStorage recommendationDbStorage) {
