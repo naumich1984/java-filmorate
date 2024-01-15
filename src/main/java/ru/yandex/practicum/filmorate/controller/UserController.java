@@ -11,7 +11,6 @@ import ru.yandex.practicum.filmorate.service.RecommendationService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Controller
@@ -30,14 +29,14 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<User> addUser(@RequestBody @Valid @NotNull User user) {
+    public ResponseEntity<User> addUser(@RequestBody @Valid User user) {
         log.debug("POST /users request");
 
         return ResponseEntity.ok(userService.getUserStorage().addUser(user));
     }
 
     @PutMapping("/users")
-    public ResponseEntity<User> updateUser(@RequestBody @Valid @NotNull User user) {
+    public ResponseEntity<User> updateUser(@RequestBody @Valid User user) {
         log.debug("PUT /users request");
 
         return ResponseEntity.ok(userService.getUserStorage().updateUser(user));
