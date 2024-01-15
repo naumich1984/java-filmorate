@@ -32,7 +32,7 @@ public class UserService {
         log.debug("userId {}, friendId {}", userId, friendId);
         log.debug("addFriend");
         User userResult = userStorage.addFriend(userId, friendId);
-        if (Optional.ofNullable(userResult).isPresent()) {
+        if (userResult != null) {
             feedStorage.addFeedEntity(userId, FeedEventType.FRIEND, FeedOperations.ADD, friendId);
         }
 
@@ -43,7 +43,7 @@ public class UserService {
         log.debug("filmId {}, userId {}", userId, friendId);
         log.debug("deleteFriend");
         User userResult = userStorage.deleteFriend(userId, friendId);
-        if (Optional.ofNullable(userResult).isPresent()) {
+        if (userResult != null) {
             feedStorage.addFeedEntity(userId, FeedEventType.FRIEND, FeedOperations.REMOVE, friendId);
         }
 
