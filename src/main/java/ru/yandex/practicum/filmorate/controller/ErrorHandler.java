@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.yandex.practicum.filmorate.exception.NoFriednshipConfimException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 
@@ -50,14 +49,5 @@ public class ErrorHandler {
         log.debug("stacktrace ошибки:{}", e.getStackTrace());
 
         return Map.of("Ошибка сервера", e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Friendship not found")
-    public Map<String, String> handleNoFriednshipConfimException(final NoFriednshipConfimException e) {
-        log.debug("Ошибка поиска дружбы:{}", e.getMessage());
-        log.debug("stacktrace ошибки:{}", e.getStackTrace());
-
-        return Map.of("Ошибка поиска дружбы", e.getMessage());
     }
 }
