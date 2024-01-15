@@ -18,7 +18,6 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-@Primary
 @Slf4j
 public class FeedDbStorage implements FeedStorage {
 

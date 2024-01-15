@@ -24,7 +24,6 @@ import java.util.Optional;
 
 @Component("userDbStorage")
 @RequiredArgsConstructor
-@Primary
 @Slf4j
 public class UserDbStorage implements UserStorage {
 

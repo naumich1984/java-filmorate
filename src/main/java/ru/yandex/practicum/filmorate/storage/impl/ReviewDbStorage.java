@@ -21,7 +21,6 @@ import java.util.Optional;
 
 @Component("reviewDbStorage")
 @RequiredArgsConstructor
-@Primary
 @Slf4j
 public class ReviewDbStorage implements ReviewStorage {
 

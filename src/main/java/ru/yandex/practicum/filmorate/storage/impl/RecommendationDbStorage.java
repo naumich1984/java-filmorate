@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Component
-@Primary
 @Slf4j
 public class RecommendationDbStorage implements RecommendationStorage {
 
