@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.RecommendationStorage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,11 +18,7 @@ public class RecommendationService {
     private RecommendationStorage recommendationStorage;
 
     public List<Film> getRecommendedFilms(Long userId) {
-        List<Film> result = new ArrayList<>();
-        for (Long recommendedFilm : recommendationStorage.recommendFilms(userId)) {
-            result.add(filmStorage.getFilm(recommendedFilm));
-        }
 
-        return result;
+        return filmStorage.getFilmsByIds(recommendationStorage.recommendFilms(userId));
     }
 }
