@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.service.ReviewService;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Controller
@@ -20,14 +19,14 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping("/reviews")
-    public ResponseEntity<Review> addReview(@RequestBody @Valid @NotNull Review review) {
+    public ResponseEntity<Review> addReview(@RequestBody @Valid Review review) {
         log.debug("POST /reviews request");
 
         return ResponseEntity.ok(reviewService.addReview(review));
     }
 
     @PutMapping("/reviews")
-    public ResponseEntity<Review> updateReview(@RequestBody @Valid @NotNull Review review) {
+    public ResponseEntity<Review> updateReview(@RequestBody @Valid Review review) {
         log.debug("PUT /reviews request");
 
         return ResponseEntity.ok(reviewService.updateReview(review));
