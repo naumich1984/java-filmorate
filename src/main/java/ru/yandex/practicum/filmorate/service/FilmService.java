@@ -20,7 +20,6 @@ public class FilmService {
 
     private final FilmStorage filmStorage;
     private final FeedStorage feedStorage;
-    private final int countTopFilm = 10;
 
     @Autowired
     public FilmService(FilmStorage filmStorage, FeedStorage feedStorage) {
@@ -75,10 +74,9 @@ public class FilmService {
     }
 
     public List<Film> getTopNfilms(Integer count, Integer genreId, Integer year) {
-        int countTop = Optional.ofNullable(count).orElse(countTopFilm);
-        log.debug("top films count = {}", countTop);
+        log.debug("top films count = {}", count);
 
-        return filmStorage.getTopNfilms(countTop, genreId, year);
+        return filmStorage.getTopNfilms(count, genreId, year);
     }
 
     public Film getFilm(Long filmId) {
