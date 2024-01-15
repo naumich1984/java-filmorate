@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.NoFriednshipConfimException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -152,7 +151,7 @@ public class UserDbStorage implements UserStorage {
         } else if (existsFriendship.get(0) == 2) {
             //не подтвержденная со стороны друга
 
-            throw new NoFriednshipConfimException("Friend did not confirm friendship");
+            throw new NotFoundException("Friend did not confirm friendship");
         } else if (existsFriendship.get(0) == 100) {
             //подтвержденная
 
@@ -167,7 +166,7 @@ public class UserDbStorage implements UserStorage {
             return getUser(friendId);
         }
 
-        throw new NoFriednshipConfimException("Error adding friendship!");
+        throw new NotFoundException("Error adding friendship!");
     }
 
     @Override
@@ -182,7 +181,7 @@ public class UserDbStorage implements UserStorage {
 
         if (existsFriendship.isEmpty()) {
             // нет дружбы
-            throw new NoFriednshipConfimException("Error adding friendship!");
+            throw new NotFoundException("Error adding friendship!");
         }
         String sqlQuery = "delete from friends where id = ? ";
         jdbcTemplate.update(sqlQuery, existsFriendship.get(0));
