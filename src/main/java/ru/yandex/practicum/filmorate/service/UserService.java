@@ -1,8 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.FeedEventType;
@@ -16,16 +15,22 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@Data
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserStorage userStorage;
     private final FeedStorage feedStorage;
 
-    @Autowired
-    public UserService(UserStorage userStorage, FeedStorage feedStorage) {
-        this.userStorage = userStorage;
-        this.feedStorage = feedStorage;
+    public List<User> getAllUsers() {
+        return userStorage.getAllUsers();
+    }
+
+    public User addUser(User user) {
+        return userStorage.addUser(user);
+    }
+
+    public User updateUser(User user) {
+        return userStorage.updateUser(user);
     }
 
     public User addFriend(Long userId, Long friendId) {

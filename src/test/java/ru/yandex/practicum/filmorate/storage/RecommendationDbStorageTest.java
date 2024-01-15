@@ -59,9 +59,9 @@ public class RecommendationDbStorageTest {
                 .birthday(LocalDate.of(1998, 8, 16))
                 .build();
 
-        userService.getUserStorage().addUser(user1);
-        userService.getUserStorage().addUser(user2);
-        userService.getUserStorage().addUser(user3);
+        userService.addUser(user1);
+        userService.addUser(user2);
+        userService.addUser(user3);
 
         Film film1 = Film.builder()
                 .name("Форсаж")
