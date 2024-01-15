@@ -274,6 +274,44 @@ public class FilmDbStorage implements FilmStorage {
         return films.get(0);
     }
 
+    @Override
+    public List<Film> getFilmsByIds(List<Long> filmIds) {
+        log.debug("getFilmsByIds");
+        String inSql = String.join(",", Collections.nCopies(filmIds.size(), "?"));
+        if (inSql.isBlank()) {
+            return Collections.emptyList();
+        }
+        String sqlQuery = "select " +
+                "   f.id, " +
+                "   f.name, " +
+                "   f.description, " +
+                "   f.release_date, " +
+                "   f.duration, " +
+                "   string_agg(gf.genre_id::text, ',') as genres, " +
+                "   string_agg(df.director_id::text, ',') as directors, " +
+                "   f.mpa_id, " +
+                "   m.mpa_name " +
+                "from films f " +
+                "left join genres_films gf on f.id = gf.film_id " +
+                "left join directors_films df on f.id = df.film_id " +
+                "inner join mpa m on m.id = f.mpa_id where " +
+                "f.id in (%s) " +
+                "group by " +
+                "   f.id, " +
+                "   f.name, " +
+                "   f.description, " +
+                "   f.release_date, " +
+                "   f.duration, " +
+                "   f.mpa_id, " +
+                "   m.mpa_name ";
+        List<Film> films = jdbcTemplate.query(String.format(sqlQuery, inSql), (rs, rowNum) -> getFilmMapper(rs), filmIds.toArray());
+        if (films.isEmpty()) {
+            throw new NotFoundException("Film not found!");
+        }
+
+        return films;
+    }
+
     private void validateFilm(Film film) {
         log.debug("validation film");
         try {
