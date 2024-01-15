@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,15 +12,11 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 @RestController
+@RequiredArgsConstructor
 @Slf4j
 public class ReviewController {
 
     private final ReviewService reviewService;
-
-    @Autowired
-    public ReviewController(ReviewService reviewService) {
-        this.reviewService = reviewService;
-    }
 
     @PostMapping("/reviews")
     public ResponseEntity addReview(@RequestBody @Valid @NotNull Review review) {

@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,15 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.service.FeedService;
 
 @RestController
+@RequiredArgsConstructor
 @Slf4j
 public class FeedController {
 
     private final FeedService feedService;
-
-    @Autowired
-    public FeedController(FeedService feedService) {
-        this.feedService = feedService;
-    }
 
     @GetMapping("/users/{id}/feed")
     public ResponseEntity getUserFeed(@PathVariable long id) {

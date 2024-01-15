@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,19 +13,12 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 @RestController
+@RequiredArgsConstructor
 @Slf4j
 public class UserController {
 
-    //  private final UserStorage userStorage; нам не нужны стораджи в контроллерах сервис и так работает со сторадж
     private final UserService userService;
     private final RecommendationService recommendationService;
-
-    @Autowired
-    public UserController(UserService userService, RecommendationService recommendationService) {
-
-        this.userService = userService;
-        this.recommendationService = recommendationService;
-    }
 
     @GetMapping("/users")
     public ResponseEntity getAllUsers() {
