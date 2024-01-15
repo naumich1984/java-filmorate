@@ -1,8 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Feed;
@@ -14,17 +13,11 @@ import java.util.List;
 
 @Service
 @Slf4j
-@Data
+@RequiredArgsConstructor
 public class FeedService {
 
     private final UserStorage userStorage;
     private final FeedStorage feedStorage;
-
-    @Autowired
-    public FeedService(UserStorage userStorage, FeedStorage feedStorage) {
-        this.userStorage = userStorage;
-        this.feedStorage = feedStorage;
-    }
 
     public List<Feed> getUserFeed(Long userId) {
         log.debug("getUserFeed");
@@ -35,6 +28,4 @@ public class FeedService {
 
         return feedStorage.getUserFeed(userId);
     }
-
-
 }

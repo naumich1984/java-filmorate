@@ -90,9 +90,9 @@ public class RecommendationDbStorageTest {
                 .genres(new ArrayList<>())
                 .directors(new ArrayList<>())
                 .build();
-        filmService.getFilmStorage().addFilm(film1);
-        filmService.getFilmStorage().addFilm(film2);
-        filmService.getFilmStorage().addFilm(film3);
+        filmService.addFilm(film1);
+        filmService.addFilm(film2);
+        filmService.addFilm(film3);
 
     }
 
