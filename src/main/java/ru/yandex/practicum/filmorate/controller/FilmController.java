@@ -93,7 +93,7 @@ public class FilmController {
     }
 
     @GetMapping("/films/popular")
-    public ResponseEntity<List<Film>> getTopFilms(@RequestParam(required = false, defaultValue = "10") @Positive Integer count,
+    public ResponseEntity<List<Film>> getTopFilms(@RequestParam(defaultValue = "10") @Positive Integer count,
                                       @RequestParam(required = false) Integer genreId,
                                       @RequestParam(required = false) @Positive  @Min(1895) Integer year) {
         log.debug("GET /films/popular?count={limit}&genreId={genreId}&year={year}");
