@@ -31,7 +31,6 @@ class FilmDbStorageTest {
     private Mpa firstMpa;
     private FilmDbStorage filmStorage;
     private UserDbStorage userStorage;
-
     private Director director;
 
     @BeforeEach
