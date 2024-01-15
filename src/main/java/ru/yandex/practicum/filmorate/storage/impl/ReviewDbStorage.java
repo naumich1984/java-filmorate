@@ -26,7 +26,6 @@ import java.util.Optional;
 public class ReviewDbStorage implements ReviewStorage {
 
     private final JdbcTemplate jdbcTemplate;
-    private final long countReviewsDefault = 10L;
 
     private void existsReview(long filmId, long userId) {
         log.debug("existsReview, filmId {} userId {}", filmId, userId);
@@ -133,9 +132,8 @@ public class ReviewDbStorage implements ReviewStorage {
 
     @Override
     public List<Review> getReviews(Long filmId, Long count) {
-        long countReviews = Optional.ofNullable(count).orElse(countReviewsDefault);
         long filmIdReview = Optional.ofNullable(filmId).orElse(-1L);
-        log.debug("getReviews getReviews = {}, filmIdReviews = {} ", countReviews, filmIdReview);
+        log.debug("getReviews getReviews = {}, filmIdReviews = {} ", count, filmIdReview);
         String sql;
         if (filmIdReview < 0) {
             //Фильм не задан - отдаем все отзывы, сортировка по полезности
@@ -164,7 +162,7 @@ public class ReviewDbStorage implements ReviewStorage {
                     " order by 6 desc " +
                     " limit ? ";
         }
-        List<Review> reviews = jdbcTemplate.query(sql, (rs, rowNum) -> getReviewMapper(rs), filmIdReview, countReviews);
+        List<Review> reviews = jdbcTemplate.query(sql, (rs, rowNum) -> getReviewMapper(rs), filmIdReview, count);
         if (reviews.isEmpty()) {
             return Collections.emptyList();
         }
