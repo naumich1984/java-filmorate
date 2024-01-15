@@ -18,7 +18,7 @@ import java.util.Map;
 public class ErrorHandler {
 
     @ExceptionHandler
-    public ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e){
+    public ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {
         log.debug("Ошибка валидации:{}", e.getMessage());
         log.debug("stacktrace ошибки:{}", e.getStackTrace());
 
