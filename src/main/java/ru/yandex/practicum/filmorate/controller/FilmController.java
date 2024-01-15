@@ -27,7 +27,7 @@ public class FilmController {
     public ResponseEntity<List<Genre>> getAllGenres() {
         log.debug("GET /genres request");
 
-        return ResponseEntity.ok(filmService.getFilmStorage().getAllGenres());
+        return ResponseEntity.ok(filmService.getAllGenres());
     }
 
 
@@ -43,7 +43,7 @@ public class FilmController {
     public ResponseEntity<List<Mpa>> getAllMpa() {
         log.debug("GET /mpa request");
 
-        return ResponseEntity.ok(filmService.getFilmStorage().getAllMpa());
+        return ResponseEntity.ok(filmService.getAllMpa());
     }
 
 
@@ -60,21 +60,21 @@ public class FilmController {
     public ResponseEntity<List<Film>> getAllFilms() {
         log.debug("GET /films request");
 
-        return ResponseEntity.ok(filmService.getFilmStorage().getAllFilms());
+        return ResponseEntity.ok(filmService.getAllFilms());
     }
 
     @PostMapping("/films")
     public ResponseEntity<Film> addFilm(@RequestBody @Valid @NotNull Film film) {
         log.debug("POST /films request");
 
-        return ResponseEntity.ok(filmService.getFilmStorage().addFilm(film));
+        return ResponseEntity.ok(filmService.addFilm(film));
     }
 
     @PutMapping("/films")
     public ResponseEntity<Film> updateFilm(@RequestBody @Valid @NotNull Film film) {
         log.debug("PUT /films request");
 
-        return ResponseEntity.ok(filmService.getFilmStorage().updateFilm(film));
+        return ResponseEntity.ok(filmService.updateFilm(film));
     }
 
     @PutMapping("/films/{id}/like/{userId}")
@@ -124,7 +124,7 @@ public class FilmController {
     public ResponseEntity<List<Director>> getAllDirectors() {
         log.debug("GET /directors request");
 
-        return ResponseEntity.ok(filmService.getFilmStorage().getAllDirectors());
+        return ResponseEntity.ok(filmService.getAllDirectors());
     }
 
     @GetMapping("/directors/{id}")
@@ -172,7 +172,7 @@ public class FilmController {
         log.debug("GET /films/search?query={query}&by={List.of(director,title)}");
         log.debug("query: {}", query);
 
-        return ResponseEntity.ok(filmService.getFilmStorage().getFilmByQuery(query, by));
+        return ResponseEntity.ok(filmService.getFilmByQuery(query, by));
     }
 
     @GetMapping("/films/common")
@@ -181,7 +181,7 @@ public class FilmController {
         log.debug("GET /films/common?userId={userId}&friendId={friendId}");
         log.debug("userId: {}, friendId: {}", userId, friendId);
 
-        return ResponseEntity.ok(filmService.getFilmStorage().getCommonFilms(userId, friendId));
+        return ResponseEntity.ok(filmService.getCommonFilms(userId, friendId));
     }
 
 }
