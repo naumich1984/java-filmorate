@@ -19,7 +19,6 @@ import java.util.Optional;
 @Data
 public class FeedService {
 
-    @Qualifier("userDbStorage")
     private final UserStorage userStorage;
     private final FeedStorage feedStorage;
 

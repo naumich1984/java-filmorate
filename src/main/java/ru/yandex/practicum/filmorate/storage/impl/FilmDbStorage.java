@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 
 @Component("filmDbStorage")
 @RequiredArgsConstructor
-@Primary
 @Slf4j
 public class FilmDbStorage implements FilmStorage {
 

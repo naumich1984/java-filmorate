@@ -19,7 +19,6 @@ import java.util.Optional;
 @Data
 public class FilmService {
 
-    @Qualifier("filmDbStorage")
     private final FilmStorage filmStorage;
     private final FeedStorage feedStorage;
     private final int countTopFilm = 10;

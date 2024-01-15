@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 @Data
 public class UserService {
 
-    @Qualifier("userDbStorage")
     private final UserStorage userStorage;
     private final FeedStorage feedStorage;
 

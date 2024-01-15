@@ -16,9 +16,8 @@ import java.util.List;
 @Slf4j
 @Data
 public class RecommendationService {
-    @Qualifier("filmDbStorage")
-    FilmStorage filmStorage;
 
+    FilmStorage filmStorage;
     RecommendationStorage recommendationStorage;
 
     @Autowired
