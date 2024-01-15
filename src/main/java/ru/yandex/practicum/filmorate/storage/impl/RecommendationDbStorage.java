@@ -69,23 +69,18 @@ public class RecommendationDbStorage implements RecommendationStorage {
 
 
     public Map<Long, List<Long>> usersAndLikedFilms() {
-
         String sql = "SELECT * FROM FILMS_LIKES";
         List<Pair<Long, Long>> pairsUsersAndFilms = jdbcTemplate.query(sql, (rs, rowNum) -> mapUserIdAndFilmId(rs));
-
         Map<Long, List<Long>> usersAndLikedFilms = new HashMap<>();
 
         for (Pair<Long, Long> pairsUsersAndFilm : pairsUsersAndFilms) {
             Long userId = pairsUsersAndFilm.getFirst();
             Long filmId = pairsUsersAndFilm.getSecond();
 
-            usersAndLikedFilms.computeIfAbsent(userId, k -> new ArrayList<>());
-
-            usersAndLikedFilms.get(userId).add(filmId);
-
+            usersAndLikedFilms.computeIfAbsent(userId, k -> new ArrayList<>()).add(filmId);
         }
-        return usersAndLikedFilms;
 
+        return usersAndLikedFilms;
     }
 
 
