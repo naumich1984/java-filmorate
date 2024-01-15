@@ -25,21 +25,21 @@ public class UserController {
     public ResponseEntity<List<User>> getAllUsers() {
         log.debug("GET /users request");
 
-        return ResponseEntity.ok(userService.getUserStorage().getAllUsers());
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @PostMapping("/users")
     public ResponseEntity<User> addUser(@RequestBody @Valid User user) {
         log.debug("POST /users request");
 
-        return ResponseEntity.ok(userService.getUserStorage().addUser(user));
+        return ResponseEntity.ok(userService.addUser(user));
     }
 
     @PutMapping("/users")
     public ResponseEntity<User> updateUser(@RequestBody @Valid User user) {
         log.debug("PUT /users request");
 
-        return ResponseEntity.ok(userService.getUserStorage().updateUser(user));
+        return ResponseEntity.ok(userService.updateUser(user));
     }
 
     @PutMapping("/users/{id}/friends/{friendId}")
