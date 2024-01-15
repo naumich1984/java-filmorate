@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
@@ -13,7 +12,6 @@ import javax.validation.constraints.Size;
 @Builder
 public class Review {
     private Long reviewId;
-    @NotNull(message = "review should not null")
     @NotBlank(message = "review should not be blank")
     @Size(max = 32768, message = "description length should be less 32768 symbols")
     private String content;

@@ -4,7 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 
 @Data
@@ -15,7 +18,6 @@ public class User {
     @NotBlank(message = "email should not be blank")
     @Email(message = "email should exists @ symbol")
     private String email;
-    @NotNull(message = "login should not null")
     @NotBlank(message = "login should not be blank")
     @Pattern(regexp = "\\S+", message = "login should not exists space")
     private String login;
