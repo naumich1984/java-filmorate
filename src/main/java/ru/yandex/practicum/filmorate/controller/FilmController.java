@@ -6,10 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.model.Director;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
@@ -153,10 +150,10 @@ public class FilmController {
 
     @GetMapping("/films/director/{directorId}")
     public ResponseEntity<List<Film>> getDirectorsFilmSortBy(@PathVariable Integer directorId,
-                                        @RequestParam(value = "sortBy", required = false) String sortBy) {
+                                        @RequestParam(value = "sortBy", required = false) DirectorSorting sortBy) {
         log.debug("GET /films/director/{directorId}?sortBy");
 
-        return ResponseEntity.ok(filmService.getDirectorsFilmSortBy(directorId, sortBy));
+        return ResponseEntity.ok(filmService.getDirectorsFilmSortBy(directorId, sortBy.name()));
     }
 
     @GetMapping("films/search")
