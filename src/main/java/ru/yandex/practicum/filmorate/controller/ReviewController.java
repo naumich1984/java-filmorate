@@ -48,7 +48,7 @@ public class ReviewController {
         log.debug("GET /reviews/{id} request");
         log.debug("id: {}", id);
 
-        return ResponseEntity.ok(reviewService.getReviewStorage().getReview(id));
+        return ResponseEntity.ok(reviewService.getReview(id));
     }
 
     @GetMapping("/reviews")
@@ -57,7 +57,7 @@ public class ReviewController {
         log.debug("GET /reviews?filmId={filmId}&count={count}");
         log.debug("filmId: {} count: {}", filmId, count);
 
-        return ResponseEntity.ok(reviewService.getReviewStorage().getReviews(filmId, count));
+        return ResponseEntity.ok(reviewService.getReviews(filmId, count));
     }
 
     @PutMapping("/reviews/{id}/like/{userId}")
@@ -73,7 +73,7 @@ public class ReviewController {
         log.debug("PUT /reviews/{id}/dislike/{userId}");
         log.debug("id: {} userId: {}", id, userId);
 
-        return ResponseEntity.ok(reviewService.getReviewStorage().addDislikeReview(id, userId));
+        return ResponseEntity.ok(reviewService.addDislikeReview(id, userId));
     }
 
     @DeleteMapping("/reviews/{id}/like/{userId}")
@@ -89,6 +89,6 @@ public class ReviewController {
         log.debug("DELETE /reviews/{id}/dislike/{userId}");
         log.debug("id: {} userId: {}", id, userId);
 
-        return ResponseEntity.ok(reviewService.getReviewStorage().deleteDislikeReview(id, userId));
+        return ResponseEntity.ok(reviewService.deleteDislikeReview(id, userId));
     }
 }

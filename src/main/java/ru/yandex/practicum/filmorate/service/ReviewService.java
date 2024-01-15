@@ -1,8 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.FeedEventType;
 import ru.yandex.practicum.filmorate.model.FeedOperations;
@@ -10,18 +9,30 @@ import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.storage.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.ReviewStorage;
 
+import java.util.List;
+
 @Service
 @Slf4j
-@Data
+@RequiredArgsConstructor
 public class ReviewService {
 
     private final ReviewStorage reviewStorage;
     private final FeedStorage feedStorage;
 
-    @Autowired
-    public ReviewService(ReviewStorage reviewStorage, FeedStorage feedStorage) {
-        this.reviewStorage = reviewStorage;
-        this.feedStorage = feedStorage;
+    public Review getReview(long id) {
+        return reviewStorage.getReview(id);
+    }
+
+    public List<Review> getReviews(Long filmId, Long count) {
+        return reviewStorage.getReviews(filmId, count);
+    }
+
+    public Review addDislikeReview(long id, long userId) {
+        return reviewStorage.addDislikeReview(id, userId);
+    }
+
+    public Review deleteDislikeReview(long id, long userId) {
+        return reviewStorage.deleteDislikeReview(id, userId);
     }
 
     public Review addReview(Review review) {
