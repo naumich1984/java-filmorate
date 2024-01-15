@@ -385,10 +385,10 @@ public class FilmDbStorage implements FilmStorage {
                 "left join directors_films df on f.id = df.film_id " +
                 "inner join mpa m on m.id = f.mpa_id\n " +
                 " where 1 = 1 ");
-                if (Optional.ofNullable(year).isPresent()) {
-                    sqlQuery.append(" and YEAR(f.RELEASE_DATE)  = ").append(year).append(" ");
-                }
-                sqlQuery.append(
+        if (year != null) {
+            sqlQuery.append(" and YEAR(f.RELEASE_DATE)  = ").append(year).append(" ");
+        }
+        sqlQuery.append(
                 "  group by     f.id,\n" +
                 "               f.name, \n" +
                 "               f.description, \n" +
@@ -397,10 +397,10 @@ public class FilmDbStorage implements FilmStorage {
                 "               f.mpa_id,\n" +
                 "               m.mpa_name\n" +
                 ") ff left join films_likes fl on ff.id = fl.film_id\n ");
-                if (Optional.ofNullable(genreId).isPresent()) {
-                    sqlQuery.append("INNER JOIN genres_films gf2 ON ff.ID  = gf2.FILM_ID AND gf2.GENRE_ID = ").append(genreId);
-                }
-                sqlQuery.append(
+        if (genreId != null) {
+            sqlQuery.append("INNER JOIN genres_films gf2 ON ff.ID  = gf2.FILM_ID AND gf2.GENRE_ID = ").append(genreId);
+        }
+        sqlQuery.append(
                 " group by ff.id, \n" +
                 "     ff.name, \n" +
                 "     ff.description, \n" +

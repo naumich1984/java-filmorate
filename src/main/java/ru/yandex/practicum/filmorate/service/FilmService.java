@@ -11,7 +11,6 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -54,7 +53,7 @@ public class FilmService {
         log.debug("addLikeToFilm");
         Film filmResult = filmStorage.addLikeToFilm(filmId, userId);
         //Делаем запись в истории для ленты событий
-        if (Optional.ofNullable(filmResult).isPresent()) {
+        if (filmResult != null) {
             feedStorage.addFeedEntity(userId, FeedEventType.LIKE, FeedOperations.ADD, filmId);
         }
 
@@ -66,7 +65,7 @@ public class FilmService {
         log.debug("deleteLikeFromFilm");
         Film filmResult = filmStorage.deleteLikeFromFilm(filmId, userId);
         //Делаем запись в истории для ленты событий
-        if (Optional.ofNullable(filmResult).isPresent()) {
+        if (filmResult != null) {
             feedStorage.addFeedEntity(userId, FeedEventType.LIKE, FeedOperations.REMOVE, filmId);
         }
 
