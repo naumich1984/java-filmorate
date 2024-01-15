@@ -29,7 +29,7 @@ public class FeedService {
 
     public List<Feed> getUserFeed(Long userId) {
         User user = userStorage.getUser(userId);
-        if (!Optional.ofNullable(user).isPresent()) {
+        if (user == null) {
             throw new NotFoundException("User not found! Can`t get feeds!");
         }
 
