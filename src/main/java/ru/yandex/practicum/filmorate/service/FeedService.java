@@ -27,6 +27,7 @@ public class FeedService {
     }
 
     public List<Feed> getUserFeed(Long userId) {
+        log.debug("getUserFeed");
         User user = userStorage.getUser(userId);
         if (user == null) {
             throw new NotFoundException("User not found! Can`t get feeds!");

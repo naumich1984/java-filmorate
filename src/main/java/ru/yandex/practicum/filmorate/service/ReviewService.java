@@ -25,6 +25,7 @@ public class ReviewService {
     }
 
     public Review addReview(Review review) {
+        log.debug("addReview");
         Review reviewResult = reviewStorage.addReview(review);
         feedStorage.addFeedEntity(review.getUserId(), FeedEventType.REVIEW, FeedOperations.ADD, review.getReviewId());
 
@@ -32,6 +33,7 @@ public class ReviewService {
     }
 
     public Review updateReview(Review review) {
+        log.debug("updateReview");
         Review reviewResult = reviewStorage.updateReview(review);
         feedStorage.addFeedEntity(reviewResult.getUserId(), FeedEventType.REVIEW, FeedOperations.UPDATE, review.getReviewId());
 
@@ -39,6 +41,7 @@ public class ReviewService {
     }
 
     public Integer deleteReview(long reviewId) {
+        log.debug("updateReview");
         Review deletedReview = reviewStorage.getReview(reviewId);
         Integer reviewResult = reviewStorage.deleteReview(reviewId);
         if (reviewResult > 0) {
@@ -49,10 +52,14 @@ public class ReviewService {
     }
 
     public Review addLikeReview(long id, long userId) {
+        log.debug("addLikeReview");
+
         return reviewStorage.addLikeReview(id, userId);
     }
 
     public Review deleteLikeReview(long id, long userId) {
+        log.debug("deleteLikeReview");
+
         return reviewStorage.deleteLikeReview(id, userId);
     }
 }
