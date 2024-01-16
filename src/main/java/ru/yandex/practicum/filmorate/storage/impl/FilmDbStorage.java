@@ -123,10 +123,7 @@ public class FilmDbStorage implements FilmStorage {
             List<Genre> genresList = new ArrayList<>();
             genresList.addAll(uniqueGenres);
             genresList.sort((o1, o2) -> o2.getId() - o1.getId());
-            for (Genre genre : uniqueGenres) {
-                String sqlQueryGenres = "insert into genres_films(film_id, genre_id) " + "values (?, ?)";
-                jdbcTemplate.update(sqlQueryGenres, filmId, genre.getId());
-            }
+            int[][] updateCounts = batchGenresInsert(uniqueGenres.stream().collect(Collectors.toList()), filmId, 1000);
         }
 
         if (film.getDirectors() != null) {
@@ -159,10 +156,7 @@ public class FilmDbStorage implements FilmStorage {
             Long filmId = film.getId();
             Set<Genre> uniqueGenres = new HashSet<Genre>(film.getGenres());
             genresList.addAll(uniqueGenres);
-            for (Genre genre : uniqueGenres) {
-                String sqlQueryGenres = "insert into genres_films(film_id, genre_id) " + "values (?, ?)";
-                jdbcTemplate.update(sqlQueryGenres, filmId, genre.getId());
-            }
+            int[][] updateCounts = batchGenresInsert(uniqueGenres.stream().collect(Collectors.toList()), filmId, 1000);
         }
         film.setGenres(genresList);
 
@@ -181,7 +175,7 @@ public class FilmDbStorage implements FilmStorage {
         return film;
     }
 
-    public int[][] batchDirectorsInsert(List<Director> directors, long filmId, int batchSize) {
+    private int[][] batchDirectorsInsert(List<Director> directors, long filmId, int batchSize) {
 
         int[][] updateCounts = jdbcTemplate.batchUpdate(
                 "insert into directors_films(film_id, director_id)  values(?,?)",
@@ -192,6 +186,23 @@ public class FilmDbStorage implements FilmStorage {
                             throws SQLException {
                         ps.setLong(1, filmId);
                         ps.setLong(2, argument.getId());
+                    }
+                });
+
+        return updateCounts;
+    }
+
+    private int[][] batchGenresInsert(List<Genre> genres, long filmId, int batchSize) {
+
+        int[][] updateCounts = jdbcTemplate.batchUpdate(
+                "insert into genres_films(film_id, genre_id) values(?,?)",
+                genres,
+                batchSize,
+                new ParameterizedPreparedStatementSetter<Genre>() {
+                    public void setValues(PreparedStatement ps, Genre argument)
+                            throws SQLException {
+                        ps.setLong(1, filmId);
+                        ps.setInt(2, argument.getId());
                     }
                 });
 
