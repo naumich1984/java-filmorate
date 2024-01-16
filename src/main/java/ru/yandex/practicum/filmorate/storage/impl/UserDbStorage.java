@@ -110,6 +110,31 @@ public class UserDbStorage implements UserStorage {
         return users;
     }
 
+    public List<User> findCommonFriends(Long userId, Long otherId) {
+        log.debug("UserId {}, OtherId {}", userId, otherId);
+        String sql = "SELECT \n" +
+                "DISTINCT \n" +
+                "id, email, login, name, birthday\n" +
+                "from\n" +
+                "(\n" +
+                "select uf.id, uf.email, uf.login, uf.name, uf.birthday from users uf where uf.id IN ( \n" +
+                "                SELECT f.FRIEND_ID\n" +
+                "                FROM users u INNER JOIN friends f ON u.ID = f.USER_ID\n" +
+                "                WHERE f.FRIENDSHIP_ID = 1 and u.ID = ?)\n" +
+                "INTERSECT \n" +
+                "select uf.id, uf.email, uf.login, uf.name, uf.birthday from users uf where uf.id IN ( \n" +
+                "                SELECT f.FRIEND_ID\n" +
+                "                FROM users u INNER JOIN friends f ON u.ID = f.USER_ID\n" +
+                "                WHERE f.FRIENDSHIP_ID = 1 and u.ID = ?)\n" +
+                ") ORDER BY id";
+        List<User> users = jdbcTemplate.query(sql, (rs, rowNum) -> getUserMapper(rs), userId, otherId);
+        if (users.isEmpty()) {
+            Collections.emptyList();
+        }
+
+        return users;
+    }
+
     private void existsUser(Long userID, String errorMessage, Integer countValue) {
         log.debug("existsUser, userId {}", userID);
         String sql = "select count(1) from users where id = ?";

@@ -10,11 +10,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -74,17 +70,9 @@ public class UserService {
     }
 
     public List<User> findCommonFriends(Long userId, Long otherId) {
-        log.debug("UserId {}, OtherId {}", userId, otherId);
-        try {
-            Set<User> userFriends = new HashSet<User>(userStorage.getUserFriends(userId));
-            Set<User> otherUserFriends = new HashSet<User>(userStorage.getUserFriends(otherId));
-            Set<User> commonFriends = new HashSet<>(userFriends);
-            commonFriends.retainAll(otherUserFriends);
+        log.debug("findCommonFriends");
 
-            return commonFriends.stream().collect(Collectors.toList());
-        } catch (NullPointerException e) {
-            return Collections.EMPTY_LIST;
-        }
+        return userStorage.findCommonFriends(userId, otherId);
     }
 
     public String deleteUser(Long userId) {
