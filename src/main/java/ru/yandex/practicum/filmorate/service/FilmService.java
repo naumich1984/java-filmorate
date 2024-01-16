@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.storage.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @Slf4j
@@ -50,23 +49,17 @@ public class FilmService {
     public Genre getGenre(Integer genreId) {
         log.debug("genreId {}", genreId);
         log.debug("Get Genre");
-        try {
-            return filmStorage.getAllGenres().stream()
-                    .filter(f -> f.getId().equals(genreId)).findFirst().get();
-        } catch (NoSuchElementException ex) {
-            throw new NotFoundException(ex.getMessage());
-        }
+
+        return filmStorage.getAllGenres().stream()
+                .filter(f -> f.getId().equals(genreId)).findFirst().get();
     }
 
     public Mpa getMpa(Integer mpaId) {
         log.debug("mpaId {}", mpaId);
         log.debug("Get Mpa");
-        try {
-            return filmStorage.getAllMpa().stream()
-                    .filter(f -> f.getId().equals(mpaId)).findFirst().get();
-        } catch (NoSuchElementException ex) {
-            throw new NotFoundException(ex.getMessage());
-        }
+
+        return filmStorage.getAllMpa().stream()
+                .filter(f -> f.getId().equals(mpaId)).findFirst().get();
     }
 
     public Film addLikeToFilm(Long filmId, Long userId) {
@@ -101,13 +94,10 @@ public class FilmService {
 
     public Film getFilm(Long filmId) {
         log.debug("filmId {}", filmId);
-        try {
-            Film film = filmStorage.getFilm(filmId);
-            if (film == null) throw new NotFoundException("Film not found!");
-            return film;
-        } catch (NoSuchElementException e) {
-            throw new NotFoundException(e.getMessage());
-        }
+        Film film = filmStorage.getFilm(filmId);
+        if (film == null) throw new NotFoundException("Film not found!");
+
+        return film;
     }
 
     public String deleteFilm(Long filmId) {

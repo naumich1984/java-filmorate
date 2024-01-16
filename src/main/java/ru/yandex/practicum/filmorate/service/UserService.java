@@ -10,7 +10,10 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,23 +60,17 @@ public class UserService {
 
     public User getUser(Long userId) {
         log.debug("userId {}", userId);
-        try {
-            User user = userStorage.getUser(userId);
-            if (user == null) throw new NotFoundException("User not found!");
-            return user;
-        } catch (NoSuchElementException e) {
-            throw new NotFoundException(e.getMessage());
-        }
+        User user = userStorage.getUser(userId);
+        if (user == null) throw new NotFoundException("User not found!");
+
+        return user;
     }
 
     public List<User> getUserFriends(Long userId) {
         log.debug("UserId {}", userId);
-        try {
-            List<User> userFriends = userStorage.getUserFriends(userId);
-            return userFriends;
-        } catch (NoSuchElementException e) {
-            throw new NotFoundException(e.getMessage());
-        }
+        List<User> userFriends = userStorage.getUserFriends(userId);
+
+        return userFriends;
     }
 
     public List<User> findCommonFriends(Long userId, Long otherId) {
@@ -85,7 +82,7 @@ public class UserService {
             commonFriends.retainAll(otherUserFriends);
 
             return commonFriends.stream().collect(Collectors.toList());
-        } catch (NoSuchElementException | NullPointerException e) {
+        } catch (NullPointerException e) {
             return Collections.EMPTY_LIST;
         }
     }
