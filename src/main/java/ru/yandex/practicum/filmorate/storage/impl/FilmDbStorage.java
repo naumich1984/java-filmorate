@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ParameterizedPreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -134,10 +135,7 @@ public class FilmDbStorage implements FilmStorage {
             List<Director> directorList = new ArrayList<>();
             directorList.addAll(uniqueDirectors);
             directorList.sort((o1, o2) -> o2.getId() - o1.getId());
-            for (Director director : uniqueDirectors) {
-                String sqlQueryDirector = "insert into directors_films(film_id, director_id) " + "values (?, ?)";
-                jdbcTemplate.update(sqlQueryDirector, filmId, director.getId());
-            }
+            int[][] updateCounts = batchDirectorsInsert(uniqueDirectors.stream().collect(Collectors.toList()), filmId, 1000);
         }
 
         return film;
@@ -174,17 +172,30 @@ public class FilmDbStorage implements FilmStorage {
         List<Director> directorList = new ArrayList<>();
         if (film.getDirectors() != null) {
             Long filmId = film.getId();
-            Set<Director> uniqueDirector = new HashSet<>(film.getDirectors());
-            directorList.addAll(uniqueDirector);
-            for (Director director : uniqueDirector) {
-                String sqlQueryDirector = "insert into directors_films(film_id, director_id) " +
-                                            "values (?, ?)";
-                jdbcTemplate.update(sqlQueryDirector, filmId, director.getId());
-            }
+            Set<Director> uniqueDirectors = new HashSet<>(film.getDirectors());
+            directorList.addAll(uniqueDirectors);
+            int[][] updateCounts = batchDirectorsInsert(uniqueDirectors.stream().collect(Collectors.toList()), filmId, 1000);
         }
         film.setDirectors(directorList);
 
         return film;
+    }
+
+    public int[][] batchDirectorsInsert(List<Director> directors, long filmId, int batchSize) {
+
+        int[][] updateCounts = jdbcTemplate.batchUpdate(
+                "insert into directors_films(film_id, director_id)  values(?,?)",
+                directors,
+                batchSize,
+                new ParameterizedPreparedStatementSetter<Director>() {
+                    public void setValues(PreparedStatement ps, Director argument)
+                            throws SQLException {
+                        ps.setLong(1, filmId);
+                        ps.setLong(2, argument.getId());
+                    }
+                });
+
+        return updateCounts;
     }
 
     @Override
