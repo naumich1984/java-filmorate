@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 public class FilmDbStorage implements FilmStorage {
 
     private final LocalDate minDateRelease = LocalDate.parse("1895-12-28");
-    private final int countTopFilm = 10;
     private final JdbcTemplate jdbcTemplate;
 
     @Override
@@ -394,8 +393,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getTopNfilms(Integer count, Integer genreId, Integer year) {
-        int countTop = count != null ? count : countTopFilm;
-        log.debug("getTopNfilms, count {}", countTop);
+        log.debug("getTopNfilms, count {}", count);
         StringBuilder sqlQuery = new StringBuilder("select\n" +
                 "   ff.id, \n" +
                 "   ff.name, \n" +
@@ -450,7 +448,7 @@ public class FilmDbStorage implements FilmStorage {
                 "order by cnt_likes desc\n" +
                 "limit ? ");
 
-        List<Film> films = jdbcTemplate.query(sqlQuery.toString(), (rs, rowNum) -> getFilmMapper(rs), countTop);
+        List<Film> films = jdbcTemplate.query(sqlQuery.toString(), (rs, rowNum) -> getFilmMapper(rs), count);
 
         return films;
     }

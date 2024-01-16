@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 
 import javax.validation.ConstraintViolationException;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 @Slf4j
@@ -36,6 +37,15 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Not found!")
     public Map<String, String> handleNotFoundException(final NotFoundException e) {
+        log.debug("Ошибка:{}", e.getMessage());
+        log.debug("stacktrace ошибки:{}", e.getStackTrace());
+
+        return Map.of("Ошибка:", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Not found!")
+    public Map<String, String> handleNoSuchElementException(final NoSuchElementException e) {
         log.debug("Ошибка:{}", e.getMessage());
         log.debug("stacktrace ошибки:{}", e.getStackTrace());
 
